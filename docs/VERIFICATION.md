@@ -21,6 +21,7 @@ Command: `npm run check`
 
 Test project: `gas-claw-e2e-20260811`
 
+- OAuth manifest uses `chat.messages.create` for the user-credential flow used by `ScriptApp.getOAuthToken()`. The earlier `chat.bot` scope was rejected with `invalid_scope` because Google supports it only for service-account app authentication.
 - `clasp create`: passed; standalone project created.
 - `clasp push`: passed; manifest and bundle accepted.
 - Advanced Google Tasks service: visible in Apps Script editor.

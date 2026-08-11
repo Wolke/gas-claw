@@ -51,4 +51,4 @@ Adapter 測試建立三種事件：合法 DM、缺少 text、Space 訊息。合�
 
 `onMessage` 是 Google Chat 平台觸發的信任入口；公開 `doPost` 則必須有額外 token，否則攻擊者只要猜到 owner ID 就可能偽造 payload。兩條入口不能混為一談。
 
-Chat API 主動推送需要 `chat.bot` scope，以及正確設定的 Chat app 身分。個人 consumer Google 帳號與 Workspace 管理網域的設定頁可能不同；文章只能描述共同程式層，部署者仍需依帳號管理政策啟用 Chat API。下一篇加入 LINE。
+目前實作以 `ScriptApp.getOAuthToken()` 取得部署者的使用者憑證，因此 Chat API 主動推送使用 `chat.messages.create` scope；`chat.bot` 僅能搭配服務帳戶的應用程式驗證，放進使用者 OAuth 會得到 `invalid_scope`。個人 consumer Google 帳號與 Workspace 管理網域的設定頁可能不同；部署者仍需依帳號管理政策啟用 Chat API。下一篇加入 LINE。
