@@ -12,5 +12,10 @@ export function createTask(task:Task){ append('Tasks',task); }
 export function createJob(job:ScheduledJob){ append('Jobs',job); }
 export function createApproval(a:ApprovalRequest){ append('Approvals',a); }
 export function findApproval(id:string){return rows<ApprovalRequest>('Approvals').find(a=>a.id===id)}
-export function recentContext(){ return {tasks:rows<Task>('Tasks').slice(-20), memory:rows('Memory').slice(-30)}; }
-export function initializeStore(){ const ss=SpreadsheetApp.create('gas-claw database'); PropertiesService.getScriptProperties().setProperty('DATABASE_SPREADSHEET_ID',ss.getId()); Object.entries(HEADERS).forEach(([name,headers],i)=>{const s=i===0?ss.getSheets()[0].setName(name):ss.insertSheet(name);s.appendRow(headers)}); return ss.getUrl(); }
+export function updateTask(id:string,changes:Partial<Task>){updateById('Tasks',id,{...changes,updatedAt:new Date().toISOString()})}
+export function saveMemory(key:string,value:string,scope:string){const existing=rows<any>('Memory').find(m=>m.key===key);if(existing){const s=sheet('Memory'),values=s.getDataRange().getValues(),row=values.findIndex((r,i)=>i>0&&r[0]===key);if(row>0){s.getRange(row+1,2,1,3).setValues([[value,scope,new Date().toISOString()]])}}else append('Memory',{key,value,scope,updatedAt:new Date().toISOString()})}
+export function recentContext(){ return {tasks:rows<Task>('Tasks').filter(t=>!['done','cancelled'].includes(t.status)).slice(-20), memory:rows('Memory').slice(-30)}; }
+export interface SessionMessage {role:'user'|'assistant';text:string;at:string}
+export function loadSession(channel:string,conversationId:string):SessionMessage[]{const value=CacheService.getScriptCache().get(`session:${channel}:${conversationId}`);if(!value)return[];try{return JSON.parse(value)}catch{return[]}}
+export function saveSession(channel:string,conversationId:string,messages:SessionMessage[]){CacheService.getScriptCache().put(`session:${channel}:${conversationId}`,JSON.stringify(messages.slice(-8)),21600)}
+export function initializeStore(){ const props=PropertiesService.getScriptProperties(),existing=props.getProperty('DATABASE_SPREADSHEET_ID');if(existing){try{return SpreadsheetApp.openById(existing).getUrl()}catch{props.deleteProperty('DATABASE_SPREADSHEET_ID')}}const ss=SpreadsheetApp.create('gas-claw database'); props.setProperty('DATABASE_SPREADSHEET_ID',ss.getId()); Object.entries(HEADERS).forEach(([name,headers],i)=>{const s=i===0?ss.getSheets()[0].setName(name):ss.insertSheet(name);s.appendRow(headers);s.setFrozenRows(1)}); return ss.getUrl(); }

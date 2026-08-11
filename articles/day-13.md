@@ -1,0 +1,45 @@
+# Day 13｜長期記憶：只記住真正有用的事
+
+## 今天要完成什麼
+
+「有記憶」很容易變成「什麼都存」。今天建立保守的長期記憶：工作時間、時區、常用 Calendar、專案資料夾、固定成員與報告格式。郵件全文、驗證碼與一次性秘密不屬於記憶。
+
+記憶分成 personal 與 project。Personal 例如「工作時間九點到六點」；project 例如「gas-claw 的 Drive folder ID」。相同 key 更新既有資料，不新增無限重複列。
+
+## 實作
+
+確定性命令使用明確語法：
+
+```text
+記住 工作時間：週一到週五 09:00–18:00
+記住 預設行事曆：primary
+忘記 預設行事曆
+```
+
+Gemini 也可以產生 `memoryCandidates`，但 runtime 只接受 key、value、scope 三個欄位。正式產品可再增加「是否保存？」確認；目前只允許低敏感、由 owner 主動提供的偏好。
+
+Memory sheet 欄位是 `key, value, scope, updatedAt`。`saveMemory` 先搜尋 key，存在就更新同一列，不存在才 append。讀入 prompt 前限制最近 30 筆，避免記憶無限膨脹。
+
+## 動手試試看
+
+建立三筆記憶：「工作時間」、「預設時區」和「gas-claw 專案資料夾」。接著問助理「下週幫我找時間整理專案」，觀察送給 Gemini 的 context 是否只有必要記憶，而不是整張工作表。再把工作時間從九點到六點改成十點到七點，確認舊列被更新而不是多出互相矛盾的第二列。
+
+對 project scope，建議 key 加上穩定 project ID，例如 `project:gas-claw:driveFolderId`，不要只用「資料夾」。這能避免未來有兩個專案時互相覆蓋。最後輸入忘記命令，檢查後續 prompt 不再引用已清除的偏好。
+
+## 驗證
+
+驗收情境：
+
+1. 記住工作時間。
+2. 隔數輪要求安排會議。
+3. Gemini 的上下文必須看得到工作時間。
+4. 再次設定同一 key，Sheet 仍只有一列且 value 更新。
+5. 「忘記」後 value 清空，不再影響安排。
+
+安全測試嘗試記住形似 `AIza...` 的值；日誌不得顯示完整內容，未來版本應直接拒絕 secret-like memory。
+
+## 安全與限制
+
+記憶不是事實資料庫。Gemini 提出的候選可能錯誤，因此專案成員、期限等資訊應保留來源，重要資料仍以 Calendar、Tasks 或文件為準。
+
+Sheets 沒有欄級加密；能編輯 Apps Script project 的人通常也能透過程式讀取資料。因此這個單 owner 版本不應保存密碼、身分證號、醫療與財務秘密。下一篇建立可追蹤的任務狀態機。

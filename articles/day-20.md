@@ -1,0 +1,42 @@
+# Day 20｜串接 Gmail：搜尋、建立草稿，但不擅自寄信
+
+## 今天要完成什麼
+
+郵件是最容易造成真實傷害的工具。今天讓 Agent 能搜尋 thread、整理主旨與建立 draft；真正寄出需要明確核准。
+
+建立草稿被標為 draft risk，可以自動執行，因為草稿不會送到外部；`gmail.sendDraft` 是 send risk，永遠進 Approval。
+
+## 實作
+
+`gmail.search` 接收 Gmail query，例如：
+
+```text
+is:unread newer_than:3d
+from:amy@example.com subject:報價
+```
+
+回傳 thread 的 subject、lastDate 與 messageCount，不預設把完整郵件本文送給 Gemini。需要摘要時再以更窄範圍讀取。
+
+建立草稿需要 to、subject、body，回傳 draftId。寄送工具只接受 draftId，核准畫面應顯示收件者、主旨與本文摘要，避免使用者只看到一串 ID。
+
+## 動手試試看
+
+使用自己的測試郵件建立 thread，先執行 `gmail.search` query `subject:gas-claw-test`。確認工具只回傳 metadata，再要求建立回覆草稿。打開 Gmail Drafts 檢查內容，但不要寄出。
+
+接著要求 Agent 寄送這份草稿。聊天應提供 approval ID，Approvals sheet 的 risk 是 send。先走拒絕路徑，確認草稿仍在；重新建立 approval 並核准，才檢查 Sent。測試帳號不要使用真實客戶收件者。
+
+## 驗證
+
+要求「搜尋最近三天未讀信」，確認只有讀取。要求「替我草擬回覆」後 Gmail Drafts 出現，但寄件匣沒有新信。再要求寄送，先確認 approval；拒絕時草稿保留，核准才寄出。
+
+測試不存在 draftId、空白收件者與無效搜尋 input。秘密掃描確認郵件本文與 access token 不進 Runs。
+
+## 安全與限制
+
+搜尋到的郵件可能包含 prompt injection。郵件文字只能是資料，不能要求 Agent 改變政策、匯出其他信件或自動寄送。
+
+第一版沒有批次寄信工具，也不允許模型指定大量 recipients。寄送是不可逆外部動作，必須保守。下一篇處理 Drive 與 Docs，讓會議紀錄成為可控資料來源。
+
+這個技能也示範「草稿」是一種安全的中間產物。Agent 能提供實際價值，又把最終對外承諾留給人。對社群貼文、報價與文件發布，也可以沿用同一模式。
+
+驗收完成後刪除測試草稿與測試信，但不要把刪除能力交給 Agent。測試資料清理由人手動執行，既能維持信箱整潔，也不需要擴大正式工具的風險範圍。

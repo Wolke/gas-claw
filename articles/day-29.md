@@ -1,0 +1,37 @@
+# Day 29｜配額、逾時、重試與執行紀錄
+
+## 今天要完成什麼
+
+功能正確不代表系統可靠。今天處理 GAS execution limit、Google 服務配額、外部 API 失敗、重試與 Runs 稽核，讓錯誤能被看見而不是默默消失。
+
+每次 Agent run 都應有 ID、channel、conversation、status、summary 與 createdAt；日誌只保存必要摘要，不保存秘密與完整郵件。
+
+## 實作
+
+Scheduler 每批最多十項，到期 job 以 lock 保護。外部推送失敗增加 attempts，三次後 failed。Webhook 重送依 event ID 在 CacheService 去重，外部寫入再以 approval ID 保證一次性。
+
+Gemini request 使用 `muteHttpExceptions`，非 2xx 只回報 status code。工具錯誤被捕捉後記錄 run failed，聊天回覆可理解的中文訊息，不回傳 stack trace。
+
+接近執行時間上限的多步工作應保存 checkpoint；第一版限制每輪最多六個工具，避免失控。
+
+## 動手試試看
+
+建立故障注入表：錯誤 Gemini key 預期 4xx、無效 LINE token 預期 push 失敗、缺少 Tasks service 預期工具錯誤、鎖被占用預期 tick 安全退出。每一列記錄使用者看到什麼、Runs 保存什麼、是否重試。
+
+接著量測一輪「Calendar 查詢＋Gmail 搜尋」所需時間，確保遠低於 GAS 執行上限。若工具結果太大，應在 tool 層先截斷，而不是等 prompt 爆掉才處理。最後檢查失敗 run 中沒有 URL query key、access token 或完整郵件。
+
+## 驗證
+
+故意使用錯誤 Gemini Key、無效 LINE token、不存在 Calendar event 與缺少 Tasks service，確認每種錯誤都有可定位紀錄。
+
+重試測試確認成功後 attempts 歸零，失敗三次停止；重複 webhook 不新增 Task；同 approval 不執行第二次。
+
+## 安全與限制
+
+可觀測性不能變成資料外洩。Logs 不記 API URL query、access token、郵件全文與文件全文。錯誤訊息先 redaction 再保存。
+
+Apps Script 配額依帳號類型變化，不能在文章寫死一組數字；部署者應查看官方當期 quotas。下一篇做全新帳號式的最終驗收與 1.0 清單。
+
+可靠性不是「永遠不錯」，而是錯誤時不重複傷害、能定位、能恢復。對 Agent 而言，這比多支援一個工具更重要。
+
+發布前把這份故障注入表放進 `docs/VERIFICATION.md`，記錄測試日期、Apps Script project、deployment version 與結果。如此最後 review 時能區分「由單元測試證明」和「由真實 Google 服務證明」的項目。

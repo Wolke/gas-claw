@@ -1,1 +1,19 @@
-{"name":"gas-claw","version":"0.1.0","private":true,"type":"module","scripts":{"build":"node scripts/build.mjs","typecheck":"tsc --noEmit","test":"vitest run","check":"npm run typecheck && npm run test && npm run build"},"devDependencies":{"@types/google-apps-script":"^1.0.97","esbuild":"^0.25.0","typescript":"^5.9.0","vitest":"^3.2.0"}}
+{
+  "name": "gas-claw",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "verify": "node scripts/verify.mjs",
+    "check": "npm run typecheck && npm run test && npm run build && npm run verify"
+  },
+  "devDependencies": {
+    "@types/google-apps-script": "^1.0.97",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.9.0",
+    "vitest": "^3.2.0"
+  }
+}
