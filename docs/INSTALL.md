@@ -21,6 +21,8 @@ If `clasp create` did not produce the intended file, copy `.clasp.json.example` 
 
 Open the Apps Script project. Choose `setupGasClaw` from the function selector, run it, review the requested Google scopes, and allow access for your own script. A spreadsheet named `gas-claw database` and one minute trigger will be created.
 
+The explicit manifest scopes cover external requests, triggers, Sheets, Gmail, Calendar, Drive, Docs, Google Tasks, and user-authenticated Google Chat message creation. Do not replace `chat.messages.create` with `chat.bot`: the latter only supports service-account app authentication and causes `invalid_scope` in this user OAuth flow.
+
 Run setup a second time to verify it is idempotent: the database URL should remain the same and there should still be one scheduler trigger.
 
 ## 3. Configure Script Properties

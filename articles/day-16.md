@@ -8,7 +8,7 @@
 
 ## 實作
 
-`schedulerTick()` 先取得 script lock，五秒內拿不到就退出，避免前一次尚未完成又重疊。接著選最多十筆 `active` 且 `runAt <= now` 的工作。
+`schedulerTick()` 先取得 script lock，五秒內拿不到就退出。它選最多十筆 `active` 且 `runAt <= now` 的工作，改成 `running` 並寫入五分鐘 lease，接著立刻釋放 lock。Gemini 與 channel push 都在 lock 外執行，避免 scheduled agent 再進 repository 時與自己死鎖；execution 中斷留下的 job 可在 lease 過期後回收。
 
 單次 reminder 發送成功後改為 completed。recurrence 為 daily 或 weekly 時，分別增加一天或七天並保持 active。發送失敗增加 attempts；第三次後轉為 failed，避免每分鐘無限轟炸 API。
 

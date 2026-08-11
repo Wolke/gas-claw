@@ -8,13 +8,13 @@
 
 ## 實作
 
-Scheduler 每批最多十項，到期 job 以 lock 保護。外部推送失敗增加 attempts，三次後 failed。Webhook event ID 先用 CacheService 快速判斷，再以 Runs 的持久 claim 防止快取淘汰後重複處理；approval 狀態機則保護核准寫入。
+Scheduler 每批最多十項，只在 claim 時持有 lock，寫入 `running` 與五分鐘 lease 後就釋放；外部推送失敗增加 attempts，三次後 failed，execution 崩潰留下的 running job 則能在 lease 過期後回收。Webhook event ID 先用 CacheService 快速判斷，再以 Runs 的持久 claim 防止快取淘汰後重複處理；approval 狀態機則保護核准寫入。
 
 推送前先把 `deliveryText` 與新的 delivery UUID 寫回 job。LINE push 把 UUID 放進 `X-Line-Retry-Key`；Google Chat messages.create 使用同一個 UUID 作為 `requestId`。若平台已接受訊息，但 GAS 在更新 completed 前逾時，下一次仍用相同 UUID，平台不會建立第二則。週期工作完成一次後清除 UUID，下一個週期才產生新值。
 
 Gemini request 使用 `muteHttpExceptions`，非 2xx 只回報 status code。工具錯誤被捕捉後記錄 run failed，聊天回覆可理解的中文訊息，不回傳 stack trace。
 
-接近執行時間上限的多步工作應保存 checkpoint；第一版限制每輪最多六個工具，避免失控。
+每輪最多六個工具。Runtime 另設四分鐘 soft budget：完成一個工具後若已越線且仍有剩餘 calls，就把原始問題、已完成結果與剩餘工具名稱存成一分鐘後的 `agent_run`，不在快逾時時硬啟動下一項操作。Continuation 只要求處理未完成部分，高風險寫入仍會重新經過 approval。
 
 ## 動手試試看
 

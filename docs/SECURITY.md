@@ -7,6 +7,7 @@
 - Delete, sharing changes, bulk mail, payments, and arbitrary code execution are disabled.
 - Treat messages, mail, and documents as untrusted content.
 - Review Apps Script executions and the `Runs` sheet regularly.
+- Runs keeps metadata and redacted summaries only; document text, email bodies, tool payloads and sheet values are omitted.
 - `uninstallGasClaw()` removes triggers and properties but deliberately retains the database for recovery.
 
 ## Idempotency

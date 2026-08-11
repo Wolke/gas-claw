@@ -1,5 +1,10 @@
 import { readFile, readdir } from 'node:fs/promises';
 const bundle=await readFile('dist/Code.js','utf8');
+const manifest=JSON.parse(await readFile('appsscript.json','utf8'));
+for(const scope of ['script.external_request','script.scriptapp','spreadsheets','gmail.modify','calendar','drive','documents','tasks','chat.messages.create'].map(s=>`https://www.googleapis.com/auth/${s}`))
+  if(!manifest.oauthScopes?.includes(scope))throw new Error(`Missing OAuth scope: ${scope}`);
+if(!manifest.dependencies?.enabledAdvancedServices?.some(s=>s.serviceId==='tasks'&&s.version==='v1'))throw new Error('Google Tasks advanced service is not enabled');
+if(manifest.webapp?.executeAs!=='USER_DEPLOYING'||manifest.webapp?.access!=='ANYONE_ANONYMOUS')throw new Error('Unexpected web app security configuration');
 for(const name of ['doGet','doPost','onMessage','schedulerTick','setupGasClaw','configureGasClaw','uninstallGasClaw']){
   if(!bundle.includes(`function ${name}(`))throw new Error(`Missing Apps Script entrypoint: ${name}`);
 }

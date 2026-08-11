@@ -11,7 +11,7 @@
 - Google Chat direct messages and LINE one-to-one messages.
 - Deterministic Chinese commands for tasks, reminders, preferences, help, and completion.
 - Gemini JSON decision loop with a six-call ceiling and explicit tool registry.
-- Gmail search/drafts/send approval, Calendar read/create/update, Drive search/folder, Docs read/create, and Google Tasks.
+- Gmail search/drafts/send approval, Calendar read/create/update, Drive search/folder, Docs read/create, and Google Tasks list/create/complete.
 - Sheets-backed tasks, schedules, approvals, memory, and run summaries.
 - Minute scheduler with lock, retry ceiling, daily/weekly recurrence, and source-channel delivery.
 - Single-use approval state bound to its source channel and conversation.

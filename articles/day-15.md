@@ -8,7 +8,7 @@
 
 ## 實作
 
-`extractTime(text, now)` 支援：
+`extractTime(text, now, timeZone)` 支援：
 
 ```text
 10 分鐘後
@@ -36,7 +36,7 @@
 }
 ```
 
-所有持久時間用 ISO 8601；顯示時才依 `Asia/Taipei` 格式化。這避免 Sheet、LINE 與 Calendar 各用不同格式。
+所有持久時間用 ISO 8601。Parser 以 `Intl.DateTimeFormat(..., { timeZone })` 取得當地年月日，再反算 UTC；不能使用執行主機的 `Date.setHours()`，否則 CI 在 UTC、Apps Script 在另一區域時會產生八小時偏差。預設 `Asia/Taipei`，也會讀取 `TIME_ZONE` 設定。
 
 ## 動手試試看
 
@@ -60,6 +60,6 @@
 
 ## 安全與限制
 
-日光節約時間在台北不是問題，但部署者若改時區，就不能單靠 UTC 加固定小時。正式 parser 應以 script timezone 做 calendar arithmetic。
+日光節約時間在台北不是問題，但部署者若改時區，也不能單靠 UTC 加固定小時。目前轉換會以 IANA time zone 反覆校正 offset；仍應替部署者實際使用的 DST 切換日增加測試。
 
 第一版只完成高信心格式，不支援農曆、國定假日或「月底前」。遇到低信心文字應由 Agent 反問具體日期。下一篇讓 scheduler 在電腦關機後真正送出提醒。

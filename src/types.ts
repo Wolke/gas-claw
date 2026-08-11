@@ -4,7 +4,7 @@ export interface IncomingMessage { id:string; channel:Channel; userId:string; co
 export interface ToolCall { id:string; name:string; input:Record<string,unknown> }
 export interface AgentDecision { response?:string; toolCalls:ToolCall[]; taskChanges:TaskChange[]; scheduleChanges:ScheduleChange[]; memoryCandidates:MemoryCandidate[] }
 export interface Task { id:string; title:string; status:'inbox'|'planned'|'doing'|'waiting'|'done'|'cancelled'; priority:'low'|'normal'|'high'|'urgent'; dueAt?:string; project?:string; sourceChannel:string; sourceConversationId:string; createdAt:string; updatedAt:string }
-export interface ScheduledJob { id:string; type:'reminder'|'agent_run'|'daily_brief'|'weekly_review'; runAt?:string; recurrence?:string; payload:Record<string,unknown>; destination:{channel:Channel;conversationId:string}; status:'active'|'paused'|'completed'|'failed'; attempts?:number }
+export interface ScheduledJob { id:string; type:'reminder'|'agent_run'|'daily_brief'|'weekly_review'; runAt?:string; recurrence?:string; payload:Record<string,unknown>; destination:{channel:Channel;conversationId:string}; status:'active'|'running'|'paused'|'completed'|'failed'; attempts?:number }
 export interface TaskChange { action:'create'|'update'; task:Partial<Task>&{title?:string;id?:string} }
 export interface ScheduleChange { action:'create'|'pause'; job:Partial<ScheduledJob> }
 export interface MemoryCandidate { key:string; value:string; scope:'personal'|'project' }

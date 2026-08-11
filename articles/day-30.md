@@ -16,7 +16,7 @@ cd gas-claw
 npm ci
 npm run check
 npx clasp login
-npx clasp create --type standalone --title gas-claw
+npx clasp create --type standalone --title gas-claw --rootDir dist
 npm run build
 npx clasp push
 ```

@@ -15,13 +15,13 @@ is:unread newer_than:3d
 from:amy@example.com subject:報價
 ```
 
-回傳 thread 的 subject、lastDate 與 messageCount，不預設把完整郵件本文送給 Gemini。需要摘要時再以更窄範圍讀取。
+回傳 threadId、subject、lastDate 與 messageCount，不預設把完整郵件本文送給 Gemini。需要摘要或判斷是否已回覆時，再用 `gmail.readThread` 讀取指定 thread 最近十封信；每封 plain text 最多三千字。
 
 建立草稿需要 to、subject、body，回傳 draftId。寄送工具只接受 draftId，核准畫面應顯示收件者、主旨與本文摘要，避免使用者只看到一串 ID。
 
 ## 動手試試看
 
-使用自己的測試郵件建立 thread，先執行 `gmail.search` query `subject:gas-claw-test`。確認工具只回傳 metadata，再要求建立回覆草稿。打開 Gmail Drafts 檢查內容，但不要寄出。
+使用自己的測試郵件建立 thread，先執行 `gmail.search` query `subject:gas-claw-test`。確認工具只回傳 metadata，再用結果中的 threadId 讀取正文並要求建立回覆草稿。打開 Gmail Drafts 檢查內容，但不要寄出。
 
 接著要求 Agent 寄送這份草稿。聊天應提供 approval ID，Approvals sheet 的 risk 是 send。先走拒絕路徑，確認草稿仍在；重新建立 approval 並核准，才檢查 Sent。測試帳號不要使用真實客戶收件者。
 
@@ -42,7 +42,7 @@ from:amy@example.com subject:報價
 
 ## 安全與限制
 
-搜尋到的郵件可能包含 prompt injection。郵件文字只能是資料，不能要求 Agent 改變政策、匯出其他信件或自動寄送。
+搜尋到的郵件可能包含 prompt injection。`gmail.readThread` 的內容只能是資料，不能要求 Agent 改變政策、匯出其他信件或自動寄送。搜尋與正文讀取分開，也讓使用者能先縮小範圍再傳給模型。
 
 第一版沒有批次寄信工具，也不允許模型指定大量 recipients。寄送是不可逆外部動作，必須保守。下一篇處理 Drive 與 Docs，讓會議紀錄成為可控資料來源。
 

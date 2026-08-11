@@ -19,6 +19,8 @@ flowchart LR
 
 Messages are normalized before entering the agent. Model output is treated as a proposal: only registered tools can run, write/send actions pause for approval, and external document content cannot alter policy.
 
+The scheduler holds `LockService` only while claiming at most ten due jobs. Claimed jobs enter `running` with a five-minute lease; Gemini calls and channel delivery happen after releasing the lock. A crashed execution is reclaimable after lease expiry, and its checkpointed delivery UUID prevents duplicate push messages.
+
 ## Workspace integration strategy
 
 Version 1 calls Apps Script services and Google REST APIs directly. This keeps the personal deployment self-contained and preserves Google Tasks support.
@@ -33,7 +35,7 @@ Reference: <https://developers.google.com/workspace/guides/configure-mcp-servers
 - Sheets: tasks, jobs, approvals, memory, runs, and persistent webhook claims.
 - CacheService: fast-path webhook deduplication and short sessions; correctness does not depend on cache retention.
 - LockService: reserved for atomic repository updates.
-- Drive/Docs: generated reports and long-form artifacts.
+- Drive/Docs: generated reports, long-form artifacts, and a private per-channel summary when a short session exceeds eight messages.
 
 ## LINE limitation
 

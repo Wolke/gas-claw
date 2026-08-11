@@ -20,7 +20,7 @@ interface SessionState {
 
 送給 Gemini 前，只取最近 N 輪，加上一段舊內容摘要。工具的原始大量結果不直接保留，例如郵件全文改成 message ID、主旨與必要摘要。
 
-每次成功回覆後更新 session；若 24 小時沒有活動就讓 Cache 自動過期。待核准要求不依賴 Cache，而是寫入 Approvals，因為使用者可能隔天才回覆。
+每次成功回覆後更新 session；Cache 最長保留六小時。當訊息超過八則，Gemini 只產生最多八百字的事實摘要，程式將摘要寫入 owner 私有的 Drive 文字檔，再把 Cache 壓縮成「舊摘要＋最新一輪」。封存 prompt 明確禁止保留密碼、token、完整郵件或文件本文。待核准要求不依賴 Cache，而是寫入 Approvals，因為使用者可能隔天才回覆。
 
 ## 動手試試看
 
@@ -37,7 +37,7 @@ interface SessionState {
 ## 發布素材
 
 - 聊天 Demo：先問任務，再用「第二個」延續上一輪上下文。
-- 設計焦點：CacheService 保存短期 session，持久狀態另存 Sheets。
+- 設計焦點：CacheService 保存短期 session，結構化狀態存 Sheets，超長對話只把去敏摘要封存到 Drive。
 - 測試／失敗案例：cache miss 時安全退化成新對話，不捏造歷史。
 - 當日 Git tag：`day-12`。下一篇處理長期記憶。
 
