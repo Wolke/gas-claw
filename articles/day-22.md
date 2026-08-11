@@ -39,6 +39,14 @@ Agent 建立 recurrence `daily` 的 ScheduledJob，payload 記錄 skillId `daily
 
 重跑同一 tick 不得立即再發；若 LINE API 失敗，attempts 增加，不更新下次日期。
 
+## 發布素材
+
+- 聊天 Demo：早上八點收到行程、到期任務與重要郵件摘要。
+- 設計焦點：skill orchestration、短輸出與 quiet hours。
+- 測試／失敗案例：任一資料源失敗時標註缺漏，不把整份晨報判定成功。
+- 截圖證據：保留觸發時間、三個資料來源摘要與送達原聊天渠道的完整時間線。
+- 當日 Git tag：`day-22`。下一篇安排會議。
+
 ## 安全與限制
 
 簡報只送 owner，不包含郵件全文或敏感附件。郵件只顯示必要主旨摘要；Calendar 私密活動可只顯示「私人行程」。

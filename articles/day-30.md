@@ -42,6 +42,13 @@ npx clasp push
 
 任何未能以真實憑證驗證的渠道都要在 release notes 明確標示，不用 mock 結果冒充 production success。
 
+## 發布素材
+
+- 聊天 Demo：從 clone、setup 到建立第一個任務，完整錄製三十分鐘驗收。
+- 設計焦點：release checklist、已證實項目與殘餘限制分開呈現。
+- 測試／失敗案例：全新帳號、空白 Sheets、OAuth 拒絕與重複部署皆納入。
+- 當日 Git tag：`day-30`；完成後建立語意化版本 `v1.0.0`。
+
 ## 安全與限制
 
 `gas-claw` 1.0 仍是單一 owner 個人版。它不支援多人 tenancy、LINE signature direct verification、任意 skill 安裝、shell、刪除與 Drive 分享修改。這些限制是安全設計的一部分。

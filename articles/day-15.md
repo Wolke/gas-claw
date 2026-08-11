@@ -50,6 +50,14 @@
 
 錯誤案例同樣重要：「提醒我開會」沒有時間，不應建立 `runAt` 為 Invalid Date；「25 點」應拒絕或追問，而非讓 Date 自動進到隔天。
 
+## 發布素材
+
+- 聊天 Demo：「明天下午三點提醒我寄報價」。
+- 設計焦點：Asia/Taipei 基準、原始文字與解析結果並存。
+- 測試／失敗案例：月底跨日、過去時間與低信心語句均有案例。
+- 截圖證據：同時保留使用者原句、Asia/Taipei ISO 時間與 scheduler 實際觸發紀錄。
+- 當日 Git tag：`day-15`。下一篇執行 scheduler。
+
 ## 安全與限制
 
 日光節約時間在台北不是問題，但部署者若改時區，就不能單靠 UTC 加固定小時。正式 parser 應以 script timezone 做 calendar arithmetic。

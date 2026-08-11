@@ -1,7 +1,7 @@
 import { callGemini, callGeminiReply } from './gemini';
 import { makeReminder, makeTask, parseLocalCommand } from './commands';
 import { ToolRegistry } from '../tools/registry';
-import { append, createApproval, createJob, createTask, findApproval, loadSession, recentContext, rows, saveMemory, saveSession, updateById, updateTask } from '../repositories/store';
+import { append, claimEvent, createApproval, createJob, createTask, findApproval, loadSession, recentContext, rows, saveMemory, saveSession, updateById, updateTask } from '../repositories/store';
 import { assertOwner, assertToolAllowed, requiresApproval, redact } from '../security/policy';
 import { findSkill, skillsForPrompt } from '../skills/catalog';
 import type { ApprovalRequest, IncomingMessage, ScheduledJob, Task } from '../types';
@@ -11,6 +11,7 @@ export function runAgent(message:IncomingMessage){
   assertOwner(message,props.getProperty(message.channel==='line'?'LINE_OWNER_ID':'GOOGLE_CHAT_OWNER_ID')||'');
   const cache=CacheService.getScriptCache();
   if(cache.get(`event:${message.id}`))return '這則訊息已處理。';
+  if(!claimEvent(message.channel,message.id,message.conversationId))return '這則訊息已處理。';
   cache.put(`event:${message.id}`,'1',21600);
   const registry=new ToolRegistry();
   const approvalReply=handleApproval(message,registry); if(approvalReply)return approvalReply;
@@ -27,7 +28,6 @@ export function runAgent(message:IncomingMessage){
     '輸出單一 JSON 物件，欄位固定為 response(string)、toolCalls(array of {id,name,input})、taskChanges(array)、scheduleChanges(array)、memoryCandidates(array)。沒有內容時使用空陣列。'
   ].join('\n');
   const decision=callGemini(prompt);
-  if(decision.toolCalls.length>6)throw new Error('Too many tool calls');
   const results=[];
   for(const call of decision.toolCalls){
     const tool=registry.get(call.name); if(!tool)throw new Error(`Unknown tool: ${call.name}`);
@@ -38,9 +38,10 @@ export function runAgent(message:IncomingMessage){
     }
     results.push({tool:call.name,result:tool.execute(input,{message,now:new Date().toISOString()})});
   }
-  decision.taskChanges.filter(c=>c.action==='create'&&c.task.title).forEach(c=>createTask(makeTask(c.task.title!,message,c.task.dueAt)));
+  decision.taskChanges.filter(c=>c.action==='create'&&c.task.title).forEach(c=>{const task=makeTask(c.task.title!,message,c.task.dueAt);createTask({...task,priority:c.task.priority??task.priority,project:c.task.project})});
   decision.taskChanges.filter(c=>c.action==='update'&&c.task.id).forEach(c=>updateTask(c.task.id!,c.task));
-  decision.scheduleChanges.filter(c=>c.action==='create').forEach(c=>createJob({...c.job,id:Utilities.getUuid(),type:c.job.type??'reminder',payload:c.job.payload??{},destination:c.job.destination??{channel:message.channel,conversationId:message.conversationId},status:'active'} as ScheduledJob));
+  decision.scheduleChanges.filter(c=>c.action==='create').forEach(c=>createJob({...c.job,id:Utilities.getUuid(),type:c.job.type??'reminder',payload:c.job.payload??{},destination:{channel:message.channel,conversationId:message.conversationId},status:'active',attempts:0} as ScheduledJob));
+  decision.scheduleChanges.filter(c=>c.action==='pause'&&c.job.id).forEach(c=>updateById('Jobs',c.job.id!,{status:'paused'}));
   decision.memoryCandidates.forEach(m=>saveMemory(m.key,m.value,m.scope));
   const approvals=results.filter((r:any)=>r.status==='pending');
   let reply=decision.response??'完成。';

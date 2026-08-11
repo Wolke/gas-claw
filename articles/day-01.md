@@ -52,6 +52,13 @@ npm run check
 
 GitHub Actions 也會在每次 push 重跑相同步驟，並掃描疑似 API Key。文章本身同樣進入驗證範圍：Day 1 到 Day 30 必須全部存在，而且每篇都要包含實作、驗證與限制，才允許發布。
 
+## 發布素材
+
+- 聊天 Demo：「明天早上提醒我整理提案」，建立任務與提醒後關掉電腦。
+- 設計焦點：渠道、Agent、工具政策與排程分層。
+- 測試／失敗案例：重送 webhook 不得重複建檔；缺 owner 時必須拒絕。
+- 當日 Git tag：`day-01`。下一篇比較聊天 Agent 與 n8n。
+
 ## 安全與限制
 
 GAS 並不是免費的無限伺服器。它有執行時間、每日服務配額與觸發器限制；也沒有任意 request header，因此 LINE 官方簽章不能在純 GAS endpoint 直接驗證。這個系列不隱藏限制：LINE 版本會使用難以猜測的 webhook token 加上 owner ID 白名單；若需要密碼學等級的簽章驗證，就必須在前面增加 Cloud Run 或 Functions proxy。

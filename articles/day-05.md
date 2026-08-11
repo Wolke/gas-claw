@@ -55,6 +55,13 @@ GitHub Actions 也必須在乾淨 runner 通過，而不是依賴作者電腦已
 
 此外，舊 repository 不應出現任何新檔案或修改；新 README 只透過 Related project 連回舊專案。這證明兩者是兄弟產品，不是假裝相容的版本升級。
 
+## 發布素材
+
+- 聊天 Demo：本日以 repository 骨架與可重現命令取代功能展示。
+- 設計焦點：公開 MIT 專案與舊 n8n repo 完全分離。
+- 測試／失敗案例：CI 檢查缺檔、秘密與不可建置的 main。
+- 當日 Git tag：`day-05`。下一篇完成 TypeScript 部署鏈。
+
 ## 安全與限制
 
 公開 repository 最常見的事故不是演算法，而是把 API Key、LINE access token 或 `.clasp.json` 推上去。除了 `.gitignore`，CI 還要用 pattern 掃描疑似 Gemini Key 與硬編碼 token。真正的秘密只存在每位部署者自己的 Script Properties。

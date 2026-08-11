@@ -57,6 +57,13 @@ LINE_WEBHOOK_TOKEN
 
 解除安裝測試執行 `uninstallGasClaw()`：它刪除觸發器與 Script Properties，但刻意保留 spreadsheet，避免誤刪使用者任務。真正刪資料庫需由使用者在 Drive 手動處理。
 
+## 發布素材
+
+- 聊天 Demo：執行 setup 後回傳資料庫 URL，再用 help 檢查 configured 狀態。
+- 設計焦點：Properties、Sheets schema 與 minute trigger 一次建立。
+- 測試／失敗案例：重跑 setup 不得產生第二個 scheduler trigger。
+- 當日 Git tag：`day-07`。下一篇接 Gemini。
+
 ## 安全與限制
 
 Apps Script 第一次執行會要求 Gmail、Calendar、Drive、Sheets、Tasks 等 OAuth scopes。這些權限很大，所以必須使用「每人部署自己的副本」模式；不要把這個版本架成公開多租戶服務。

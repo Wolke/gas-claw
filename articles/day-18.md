@@ -34,6 +34,13 @@ manifest：
 
 拒絕流程也要測：Approval 狀態改 rejected，Tasks 不變。過期 ID 改 expired。
 
+## 發布素材
+
+- 聊天 Demo：「把買測試網域加到 Google Tasks」。
+- 設計焦點：內部 Task Store 與 Google Tasks 是兩個明確資料源。
+- 測試／失敗案例：create 需核准，重試以 idempotency key 防止重複。
+- 當日 Git tag：`day-18`。下一篇串 Calendar。
+
 ## 安全與限制
 
 內部 task 與 Google Tasks 是兩套資料來源。第一版不自動雙向同步，以免產生衝突與重複；使用者必須說明要建立本機任務或 Google Tasks。

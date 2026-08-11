@@ -11,6 +11,7 @@ function safeJson(v:string){try{return JSON.parse(v)}catch{return v}}
 export function createTask(task:Task){ append('Tasks',task); }
 export function createJob(job:ScheduledJob){ append('Jobs',job); }
 export function createApproval(a:ApprovalRequest){ append('Approvals',a); }
+export function claimEvent(channel:string,eventId:string,conversationId:string){const key=`event:${channel}:${eventId}`,lock=LockService.getScriptLock();if(!lock.tryLock(5000))return false;try{if(rows<any>('Runs').some(run=>run.id===key))return false;append('Runs',{id:key,channel,conversationId,status:'claimed',summary:'webhook event claimed',createdAt:new Date().toISOString()});return true}finally{lock.releaseLock()}}
 export function findApproval(id:string){return rows<ApprovalRequest>('Approvals').find(a=>a.id===id)}
 export function updateTask(id:string,changes:Partial<Task>){updateById('Tasks',id,{...changes,updatedAt:new Date().toISOString()})}
 export function saveMemory(key:string,value:string,scope:string){const existing=rows<any>('Memory').find(m=>m.key===key);if(existing){const s=sheet('Memory'),values=s.getDataRange().getValues(),row=values.findIndex((r,i)=>i>0&&r[0]===key);if(row>0){s.getRange(row+1,2,1,3).setValues([[value,scope,new Date().toISOString()]])}}else append('Memory',{key,value,scope,updatedAt:new Date().toISOString()})}

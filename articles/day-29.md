@@ -8,7 +8,9 @@
 
 ## 實作
 
-Scheduler 每批最多十項，到期 job 以 lock 保護。外部推送失敗增加 attempts，三次後 failed。Webhook 重送依 event ID 在 CacheService 去重，外部寫入再以 approval ID 保證一次性。
+Scheduler 每批最多十項，到期 job 以 lock 保護。外部推送失敗增加 attempts，三次後 failed。Webhook event ID 先用 CacheService 快速判斷，再以 Runs 的持久 claim 防止快取淘汰後重複處理；approval 狀態機則保護核准寫入。
+
+推送前先把 `deliveryText` 與新的 delivery UUID 寫回 job。LINE push 把 UUID 放進 `X-Line-Retry-Key`；Google Chat messages.create 使用同一個 UUID 作為 `requestId`。若平台已接受訊息，但 GAS 在更新 completed 前逾時，下一次仍用相同 UUID，平台不會建立第二則。週期工作完成一次後清除 UUID，下一個週期才產生新值。
 
 Gemini request 使用 `muteHttpExceptions`，非 2xx 只回報 status code。工具錯誤被捕捉後記錄 run failed，聊天回覆可理解的中文訊息，不回傳 stack trace。
 
@@ -24,7 +26,14 @@ Gemini request 使用 `muteHttpExceptions`，非 2xx 只回報 status code。工
 
 故意使用錯誤 Gemini Key、無效 LINE token、不存在 Calendar event 與缺少 Tasks service，確認每種錯誤都有可定位紀錄。
 
-重試測試確認成功後 attempts 歸零，失敗三次停止；重複 webhook 不新增 Task；同 approval 不執行第二次。
+重試測試確認成功後 attempts 歸零，失敗三次停止；重複 webhook 不新增 Task；同 approval 不執行第二次；第一次收到 5xx、第二次成功時兩次 request 的 delivery UUID 必須完全相同。
+
+## 發布素材
+
+- 聊天 Demo：模擬 LINE push 暫時失敗，重試後只收到一次結果。
+- 設計焦點：checkpoint、三次 retry、Runs 與秘密遮罩。
+- 測試／失敗案例：Gemini 429、GAS 逾時、scheduler 重跑與永久失敗。
+- 當日 Git tag：`day-29`。下一篇做全新帳號驗收。
 
 ## 安全與限制
 

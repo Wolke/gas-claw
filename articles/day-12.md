@@ -34,6 +34,13 @@ interface SessionState {
 
 還要測試 prompt budget：塞入超長文件時，session builder 只保留指定上限；工具結果中若有 API Key pattern，進入 run log 前必須 redaction。
 
+## 發布素材
+
+- 聊天 Demo：先問任務，再用「第二個」延續上一輪上下文。
+- 設計焦點：CacheService 保存短期 session，持久狀態另存 Sheets。
+- 測試／失敗案例：cache miss 時安全退化成新對話，不捏造歷史。
+- 當日 Git tag：`day-12`。下一篇處理長期記憶。
+
 ## 安全與限制
 
 聊天歷史可能包含客戶資料、郵件摘要或私人行程。短期 session 不應變成永久監控紀錄；預設只留完成任務所需內容。Run log 只保存摘要與狀態，不保存完整郵件本文。

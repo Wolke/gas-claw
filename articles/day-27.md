@@ -37,6 +37,13 @@ Google Chat Cards 與 LINE postback 未來都可轉成相同文字命令或 acti
 
 最重要的 assertion：pending 階段外部服務完全沒有副作用；approved 只產生一次副作用。
 
+## 發布素材
+
+- 聊天 Demo：建立行程後收到 approval ID，再回覆核准或拒絕。
+- 設計焦點：pending、executing、approved、rejected、expired 狀態完整轉移。
+- 測試／失敗案例：過期與重複點擊不得再次執行外部寫入。
+- 當日 Git tag：`day-27`。下一篇進行 injection 攻擊測試。
+
 ## 安全與限制
 
 Approval summary 必須讓人看得懂真正影響，不能只顯示工具名稱。寄信要顯示收件者與本文摘要，Calendar 要顯示時間，Docs 要顯示標題。

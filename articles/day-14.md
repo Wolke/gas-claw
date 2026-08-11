@@ -47,6 +47,13 @@ Google Tasks 是外部系統。讀取可自動，建立與完成被標為 write�
 
 整合驗收在 Google Chat 新增任務，再從 LINE 列出。因為是單 owner 部署，資料可共用；但回覆與提醒仍回到來源渠道。
 
+## 發布素材
+
+- 聊天 Demo：新增、列出、完成與延後同一筆任務。
+- 設計焦點：狀態機、priority、dueAt 與來源追蹤。
+- 測試／失敗案例：done 不可無意回到 doing；模糊匹配多筆時要追問。
+- 當日 Git tag：`day-14`。下一篇解析時間。
+
 ## 安全與限制
 
 模糊匹配不能在多筆時猜測。任務文字也可能包含 prompt injection，但它只作為資料呈現，不可改變 tool policy。

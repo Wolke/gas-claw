@@ -48,6 +48,13 @@ npm run verify
 
 完整測試還包括：同一 webhook event ID 只能處理一次、scheduler 重跑不能重複推送、失敗三次後必須轉為 `failed`。
 
+## 發布素材
+
+- 聊天 Demo：建立一分鐘後提醒並關閉本機開發環境。
+- 設計焦點：觸發器取代常駐 process，checkpoint 取代長時間執行。
+- 測試／失敗案例：模擬逾時與 trigger 延遲，說明 GAS 不適用秒級任務。
+- 當日 Git tag：`day-03`。下一篇畫完整資料流。
+
 ## 安全與限制
 
 GAS 的限制包括單次執行時間、觸發器精度、每日 UrlFetch／Gmail 等配額，以及冷啟動延遲。因此 `gas-claw` 不適合長時間影音處理、即時串流或大量多人服務。排程「每分鐘」也不保證秒級準時。

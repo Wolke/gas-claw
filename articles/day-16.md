@@ -26,6 +26,13 @@ LINE 主動訊息使用 push endpoint；Google Chat 使用 `chat.googleapis.com/
 
 再刻意放入錯誤 destination，執行三次 tick，確認 attempts 由一到三且最後為 failed。重複執行 completed job 不得再推送。
 
+## 發布素材
+
+- 聊天 Demo：建立一分鐘後提醒，關掉電腦後由原渠道收到 push。
+- 設計焦點：到期挑選、lease、retry、recurrence 與 destination。
+- 測試／失敗案例：同一 tick 重跑不得重複執行 agent work。
+- 當日 Git tag：`day-16`。下一篇建立 Tool Registry。
+
 ## 安全與限制
 
 排程推送只允許送回 owner 的既有 destination，不接受 Gemini 任意指定陌生 user ID。大量通知也可能觸發 LINE 或 Chat 配額，因此每次 tick 有上限。

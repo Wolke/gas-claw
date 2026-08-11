@@ -49,6 +49,13 @@ Apps Script `doPost(e)` 先比對 query token，再解析 events，最後仍由 
 
 第三個情境必須在 reply token 失效後，由 scheduler 使用 push API 主動送回，才算證明「不是只有聊天回聲」。
 
+## 發布素材
+
+- 聊天 Demo：LINE 私訊建立任務，立即用 reply token 回覆。
+- 設計焦點：reply 與 push 的不同生命週期。
+- 測試／失敗案例：錯誤 webhook token、群組來源與重送事件皆拒絕。
+- 當日 Git tag：`day-10`。下一篇統一渠道。
+
 ## 安全與限制
 
 LINE 官方要求驗證 `X-Line-Signature`，但 Apps Script Web App 的事件物件不提供任意 HTTP request header，因此純 GAS 無法取得該值。`Utilities.computeHmacSha256Signature` 即使會算也沒有輸入 signature 可以比對。

@@ -50,6 +50,13 @@ npx clasp deploy --description "gas-claw test"
 
 這是兩層驗證：靜態 verifier 能快速防止 regression；實機編輯器驗證能抓到 GAS 平台特有行為。最後用 web app `/exec` 呼叫 health endpoint，應回傳名稱、版本、狀態及 configured flag。
 
+## 發布素材
+
+- 聊天 Demo：尚未接渠道；展示同一份 TypeScript bundle 被 Apps Script 辨識。
+- 設計焦點：esbuild 產出單檔並保留 GAS 頂層入口。
+- 測試／失敗案例：若入口被包進 module，函式選單找不到 `doPost`。
+- 當日 Git tag：`day-06`。下一篇執行初始化。
+
 ## 安全與限制
 
 `.clasp.json` 不應提交，因為每位讀者必須部署自己的副本。`dist` 也不放進 Git，避免 review 時同時看到原始碼與巨大 bundle；CI 每次重建即可。

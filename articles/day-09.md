@@ -47,6 +47,13 @@ Adapter 測試建立三種事件：合法 DM、缺少 text、Space 訊息。合�
 3. 重送相同 event 時，不新增第二筆。
 4. 非 owner 帳號傳訊時，execution log 顯示 unauthorized，且不產生資料。
 
+## 發布素材
+
+- 聊天 Demo：Google Chat 私訊「新增任務：完成簡報」。
+- 設計焦點：Chat event normalization 與主動訊息的 user OAuth。
+- 測試／失敗案例：群組、非 owner 與 `chat.bot` invalid_scope 均有明確處理。
+- 當日 Git tag：`day-09`。下一篇加入 LINE。
+
 ## 安全與限制
 
 `onMessage` 是 Google Chat 平台觸發的信任入口；公開 `doPost` 則必須有額外 token，否則攻擊者只要猜到 owner ID 就可能偽造 payload。兩條入口不能混為一談。

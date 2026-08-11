@@ -15,5 +15,4 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run check
-      - name: Secret scan
-        run: node scripts/secret-scan.mjs
+      - run: npm run secret-scan

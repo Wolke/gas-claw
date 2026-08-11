@@ -19,11 +19,19 @@ flowchart LR
 
 Messages are normalized before entering the agent. Model output is treated as a proposal: only registered tools can run, write/send actions pause for approval, and external document content cannot alter policy.
 
+## Workspace integration strategy
+
+Version 1 calls Apps Script services and Google REST APIs directly. This keeps the personal deployment self-contained and preserves Google Tasks support.
+
+Google Workspace remote MCP servers are an optional future tool adapter, not a runtime dependency. As of August 2026 they are in Developer Preview, require a Cloud project, OAuth clients and an external MCP client, and do not list Google Tasks among the supported products. The Agent loop, approval policy and scheduler are deliberately isolated from tool implementations so an MCP adapter can be added later without changing the conversational control plane.
+
+Reference: <https://developers.google.com/workspace/guides/configure-mcp-servers>
+
 ## Storage
 
 - Script Properties: secrets and owner identifiers.
-- Sheets: tasks, jobs, approvals, memory, and runs.
-- CacheService: webhook deduplication.
+- Sheets: tasks, jobs, approvals, memory, runs, and persistent webhook claims.
+- CacheService: fast-path webhook deduplication and short sessions; correctness does not depend on cache retention.
 - LockService: reserved for atomic repository updates.
 - Drive/Docs: generated reports and long-form artifacts.
 

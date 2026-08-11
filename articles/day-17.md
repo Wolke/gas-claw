@@ -34,6 +34,21 @@ Registry 只向模型提供名稱、說明和風險，不暴露實作。執行�
 
 Agent 測試餵入假的決策，確認工具結果寫入 Runs，API Key pattern 被遮罩；模型宣稱成功但沒有 tool result 時不得記成外部操作完成。
 
+### 2026 年的新選項：Google Workspace MCP
+
+Google 在 Developer Preview 提供 Gmail、Drive、Docs、Sheets、Slides、Calendar、Chat 與 People 的遠端 MCP server。它把 `gmail.search_threads`、`drive.read_file_content`、`calendar.create_event` 等操作包成標準 MCP tools，很適合 Antigravity、Claude 或其他具備 MCP client 的 Agent。
+
+`gas-claw` v1 沒有把它設為必要依賴。原因不是 MCP 不好，而是產品邊界不同：Workspace MCP 需要 Google Cloud project、啟用各產品與 MCP API、建立 OAuth client，並由外部 MCP client 分別完成驗證；它目前也沒有 Google Tasks。若把它變成唯一工具層，使用者就無法只複製一份 Apps Script 在三十分鐘內完成部署。
+
+因此 registry 保留實作抽象，未來可以讓同一個工具宣告選擇兩種 adapter：預設用 Apps Script service／REST API，實驗模式則轉送官方 Workspace MCP。Agent、核准、排程、LINE adapter 與 audit log 都不需要因此重寫。官方文件：<https://developers.google.com/workspace/guides/configure-mcp-servers>。
+
+## 發布素材
+
+- 聊天 Demo：搜尋 Gmail 直接執行，Calendar create 則停在核准。
+- 設計焦點：原生 GAS tool adapter 與未來 Workspace MCP adapter 分離。
+- 測試／失敗案例：`shell.exec`、錯誤參數與超量 tool calls 全部拒絕。
+- 當日 Git tag：`day-17`。下一篇串 Google Tasks。
+
 ## 安全與限制
 
 工具 description 不是權限。唯一權限來源是程式裡的 risk 與 policy。即使 prompt 被 injection 改寫，模型仍拿不到 registry 以外的能力。

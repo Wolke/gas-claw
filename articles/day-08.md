@@ -49,6 +49,13 @@ Prompt 包含技能目錄、可用工具、未完成任務、長期記憶、目�
 
 實機測試則先用不需 Workspace 寫入的問題，例如「幫我說明今天有哪些能力」，確認 Gemini endpoint 回應及 Apps Script execution log 沒有 401、403 或 JSON parse error。
 
+## 發布素材
+
+- 聊天 Demo：「列出今天工作」轉成合法的結構化 decision。
+- 設計焦點：JSON schema、資料邊界與最多六次 tool calls。
+- 測試／失敗案例：markdown fence、缺欄位與未知工具都不能執行。
+- 當日 Git tag：`day-08`。下一篇進入 Google Chat。
+
 ## 安全與限制
 
 Gemini API Key 放在 URL query 是 Developer API 的標準呼叫方式，但錯誤訊息與日誌不能包含完整 URL。程式只記錄 HTTP status，不輸出 key 或 response header。

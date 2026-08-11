@@ -33,6 +33,13 @@ interface ChannelAddress {
 
 跨渠道的終極驗收是：在 Google Chat 建立提醒時，提醒回 Google Chat；在 LINE 建立時，回 LINE，兩者資料都存在同一個 Jobs schema。
 
+## 發布素材
+
+- 聊天 Demo：同一句任務命令分別由 Chat 與 LINE 送入，得到同一 Task。
+- 設計焦點：`IncomingMessage` 與 `ChannelAddress` 是唯一渠道邊界。
+- 測試／失敗案例：缺 message id、user id 或文字時 normalization 失敗。
+- 當日 Git tag：`day-11`。下一篇加入 session。
+
 ## 安全與限制
 
 不要把 `conversationId` 當成身分驗證。它只代表回覆位置，真正授權必須比對 userId 與 Script Properties 中的 owner。即使是同一個人，Google 與 LINE 也有不同 ID，所以分別設定 allowlist。

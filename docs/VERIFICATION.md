@@ -7,10 +7,13 @@ Last updated: 2026-08-11 (Asia/Taipei)
 Command: `npm run check`
 
 - TypeScript strict typecheck: passed.
-- Vitest: 31 tests passed across pure logic and a mocked Apps Script runtime.
+- Vitest: 58 tests passed across pure logic and a mocked Apps Script runtime.
 - Runtime scenarios: owner rejection, task create/list/complete, webhook deduplication, reminders, memory update.
 - Security scenarios: unknown tool rejection, risk approval classification, secret redaction, LINE group rejection.
 - Scheduler scenarios: one-shot, daily and weekly recurrence.
+- Delivery idempotency: persistent webhook claims, LINE `X-Line-Retry-Key`, Google Chat `requestId`, retry-key conflict, and ambiguous-failure reuse.
+- Approval lifecycle: approve, reject, expire, source mismatch and duplicate approval.
+- Model mutation validation: task states, schedule destinations, recurrence, memory scopes, field lengths and tool input types.
 - Gemini decision validation: malformed object and array shapes are rejected.
 - Delivery safety: scheduled Agent output is checkpointed before channel push, so retry does not repeat Agent work.
 - Bundle: built by esbuild.
@@ -26,11 +29,11 @@ Test project: `gas-claw-e2e-20260811`
 - `clasp push`: passed; manifest and bundle accepted.
 - Advanced Google Tasks service: visible in Apps Script editor.
 - Static entrypoint discovery: passed after build shim fix; Apps Script function selector displays `doGet` and the other top-level handlers.
-- Deployment versions 1–4: created successfully; version 4 contains the current `0.2.0` bundle.
+- Deployment versions 1–7: created successfully; version 7 contains the current audited `0.2.0` bundle.
 
 ## Awaiting account consent
 
-The final live execution, database initialization, public `/exec` health response, Google Chat delivery, LINE delivery, and real Workspace write approval require the project owner to accept the Apps Script OAuth consent prompt and provide personal Gemini/LINE credentials. Automated browser attempts reached the consent prompt but did not accept it because granting persistent access requires explicit user confirmation. Before consent, the version 4 `/exec` endpoint correctly remains inaccessible with HTTP 403.
+The final live execution, database initialization, public `/exec` health response, Google Chat delivery, LINE delivery, and real Workspace write approval require the project owner to accept the Apps Script OAuth consent prompt and provide personal Gemini/LINE credentials. Automated browser attempts reached the corrected consent prompt but did not accept it because granting persistent access requires explicit user confirmation. Before consent, the version 7 `/exec` endpoint correctly remains inaccessible with HTTP 403. Apps Script Execution API cannot remove this handoff: Google requires a shared standard Cloud project and an OAuth token covering every script scope.
 
 These items must not be reported as production-verified until the checklist below has evidence:
 

@@ -24,6 +24,14 @@
 
 建立週報時先顯示內容預覽；只有核准 `docs.create` 後 Drive 才出現文件。拒絕時不產生檔案。
 
+## 發布素材
+
+- 聊天 Demo：搜尋會議記錄並建立行動清單文件。
+- 設計焦點：metadata 搜尋、內容讀取與文件建立分開授權。
+- 測試／失敗案例：同名文件不能自動選第一筆，注入文字只視為資料。
+- 截圖證據：使用公開虛構會議記錄，讓讀者可複製輸入並比對輸出的 Docs URL。
+- 當日 Git tag：`day-21`。下一篇組合 Daily Brief。
+
 ## 安全與限制
 
 Drive 文件是典型間接 prompt injection 來源。System prompt 明示 external content untrusted，registry 又限制工具，但仍需測試模型行為。

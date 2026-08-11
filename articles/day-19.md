@@ -29,6 +29,14 @@
 
 測試 start 晚於 end、無效 ISO date、找不到 eventId 都應失敗。重複核准不得建立第二個活動。
 
+## 發布素材
+
+- 聊天 Demo：查詢下週空檔，選擇後核准建立測試行程。
+- 設計焦點：read 與 write 工具分離，時間一律帶 timezone。
+- 測試／失敗案例：結束早於開始、衝突與重複核准都不能寫入。
+- 截圖證據：核准前後各截一次 Calendar，證明寫入只發生在 owner 明確同意之後。
+- 當日 Git tag：`day-19`。下一篇串 Gmail。
+
 ## 安全與限制
 
 Calendar 標題與描述可能包含私人資訊，run log 只記工具摘要。邀請外部 attendees 比單純建立個人 event 風險更高，第一版尚未提供 attendees 參數。

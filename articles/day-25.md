@@ -26,6 +26,13 @@ Run log 應只記 thread 識別與結果，不保存完整郵件本文。重跑 
 
 拒絕 send approval 時 draft 保留，郵件不寄出；核准後狀態更新，重複 ID 無效。
 
+## 發布素材
+
+- 聊天 Demo：建立回信草稿，兩天無回覆時提醒 owner。
+- 設計焦點：thread identity、追蹤 job 與 owner-only notification。
+- 測試／失敗案例：已收到回覆時 job 自動完成；不得直接催收外部收件者。
+- 當日 Git tag：`day-25`。下一篇產生 Weekly Review。
+
 ## 安全與限制
 
 Gmail thread 判斷「對方回覆」不能只看最新日期，還要辨識 sender。第一版工具回傳資料有限，正式技能應補 message metadata。

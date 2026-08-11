@@ -54,6 +54,13 @@ LINE ────────┘                                  │
 
 這些不是 UI 截圖能證明的行為，因此必須由測試與實機 execution log 共同確認。
 
+## 發布素材
+
+- 聊天 Demo：從訊息、Gemini decision、approval 到 Calendar 寫入逐步追蹤。
+- 設計焦點：信任邊界、資料儲存與主動回報路徑。
+- 測試／失敗案例：模型回傳壞 JSON 或超過六次工具呼叫時停止。
+- 當日 Git tag：`day-04`。下一篇建立 repo。
+
 ## 安全與限制
 
 最大的信任邊界位於 Gemini Decision 與 Tool Registry 之間。模型輸出永遠視為不可信提案；即使 JSON 格式正確，也不能直接執行。輸入驗證、風險標籤與 approval 狀態才是授權來源。
