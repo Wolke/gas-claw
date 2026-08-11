@@ -17,26 +17,15 @@ npx clasp push
 
 If `clasp create` did not produce the intended file, copy `.clasp.json.example` to `.clasp.json`, insert the new script ID, and keep `rootDir` set to `dist`.
 
-## 2. Attach a standard Google Cloud project
-
-Google Chat configuration and the Google Tasks advanced service need a **standard** Google Cloud project. Do this before the first Apps Script authorization:
-
-1. Create a Google Cloud project and note its numeric **project number** (not the project ID).
-2. In that project, enable **Google Chat API** and **Google Tasks API**.
-3. Configure the OAuth consent screen. For a personal Google account choose the external audience, add yourself as a test user when Google requests it, and review every requested scope. Workspace administrators may restrict the audience or scopes.
-4. In Apps Script open **Project Settings → Google Cloud Platform (GCP) Project → Change project**, enter the project number, and confirm.
-
-Apps Script refuses to attach a standard project until its OAuth consent screen is configured. Changing the attached project also revokes authorizations issued through the former project, so attach it before running setup. You do not need to create an OAuth client ID for the Apps Script web app itself.
-
-## 3. Authorize and initialize
+## 2. Authorize and initialize
 
 Open the Apps Script project. Choose `setupGasClaw` from the function selector, run it, review the requested Google scopes, and allow access for your own script. A spreadsheet named `gas-claw database` and one minute trigger will be created.
 
-The explicit manifest scopes cover external requests, triggers, Sheets, Gmail, Calendar, Drive, Docs, Google Tasks, and user-authenticated Google Chat message creation. Do not replace `chat.messages.create` with `chat.bot`: the latter only supports service-account app authentication and causes `invalid_scope` in this user OAuth flow.
+The explicit manifest scopes cover external requests, triggers, Sheets, Gmail, Calendar, Drive, Docs, and Google Tasks. The LINE-first edition does not request Google Chat scopes and does not require users to create or attach a standard Google Cloud project.
 
 Run setup a second time to verify it is idempotent: the database URL should remain the same and there should still be one scheduler trigger.
 
-## 4. Configure Script Properties
+## 3. Configure Script Properties
 
 Open **Project Settings → Script Properties**. Add only the channels you use:
 
@@ -44,15 +33,19 @@ Open **Project Settings → Script Properties**. Add only the channels you use:
 |---|---:|---|
 | `GEMINI_API_KEY` | yes | Gemini Developer API key |
 | `GEMINI_MODEL` | no | Default `gemini-2.5-flash` |
-| `GOOGLE_CHAT_OWNER_ID` | Chat | Allowed Google Chat `users/...` ID |
-| `GOOGLE_CHAT_WEBHOOK_TOKEN` | HTTP Chat | Long random URL token |
-| `LINE_OWNER_ID` | LINE | Allowed LINE user ID |
-| `LINE_CHANNEL_ACCESS_TOKEN` | LINE | Reply and push token |
-| `LINE_WEBHOOK_TOKEN` | LINE | Long random URL token |
+| `LINE_OWNER_ID` | yes | Allowed LINE user ID |
+| `LINE_CHANNEL_ACCESS_TOKEN` | yes | Reply and push token |
+| `LINE_WEBHOOK_TOKEN` | yes | At least 32 random bytes encoded as hex or base64url |
 
 Never put these values in source, Sheets, screenshots, articles, or GitHub Actions.
 
-## 5. Deploy the web app
+## 4. Create the LINE channel
+
+In the LINE Developers Console, create a provider and a Messaging API channel. Disable automatic greeting and auto-response messages so they do not compete with gas-claw. Issue a channel access token and copy the bot's Basic ID.
+
+Add the bot as a friend, send one direct message, and obtain your own LINE user ID from the webhook event or the Messaging API console. gas-claw deliberately accepts only `source.type: "user"`; groups and rooms are rejected.
+
+## 5. Deploy the web app and register the webhook
 
 Use **Deploy → New deployment → Web app**. Execute as yourself. LINE needs an endpoint it can reach; choose the audience supported by your account and keep the URL secret. Copy the `/exec` URL.
 
@@ -62,20 +55,9 @@ LINE webhook:
 https://script.google.com/macros/s/DEPLOYMENT_ID/exec?token=LINE_WEBHOOK_TOKEN
 ```
 
-Apps Script does not expose LINE's signature header. This direct pure-GAS mode therefore uses the URL token plus owner allowlist. Put a signature-verifying proxy in front of GAS for production or team use.
+Paste the tokenized `/exec` URL into the LINE Messaging API webhook URL field, press **Verify**, then enable **Use webhook**. Apps Script does not expose LINE's signature header. This direct pure-GAS mode therefore uses the unguessable URL token plus owner allowlist. Rotate the URL token and redeploy if the webhook URL is exposed; use a signature-verifying proxy only if you later move beyond the personal single-owner threat model.
 
-## 6. Google Chat
-
-In the standard Google Cloud project, open **Google Chat API → Configuration** and configure the Chat app:
-
-- Enable interactive features.
-- Select **Apps Script** as the connection setting and enter the Apps Script deployment ID.
-- Allow direct messages; the first release deliberately rejects spaces and group messages.
-- Limit visibility to your own account while testing.
-
-Save the configuration, add the app to a direct message, and set `GOOGLE_CHAT_OWNER_ID` to the sender resource name (`users/...`) shown in a test event. The Apps Script handler is `onMessage`.
-
-## 7. Smoke test
+## 6. Smoke test
 
 ```text
 幫助

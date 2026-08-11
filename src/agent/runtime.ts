@@ -9,7 +9,7 @@ import type { ApprovalRequest, IncomingMessage, ScheduledJob, Task } from '../ty
 export function runAgent(message:IncomingMessage){
   const startedAt=Date.now();
   const props=PropertiesService.getScriptProperties();
-  assertOwner(message,props.getProperty(message.channel==='line'?'LINE_OWNER_ID':'GOOGLE_CHAT_OWNER_ID')||'');
+  assertOwner(message,props.getProperty('LINE_OWNER_ID')||'');
   const cache=CacheService.getScriptCache();
   if(cache.get(`event:${message.id}`))return '這則訊息已處理。';
   if(!claimEvent(message.channel,message.id,message.conversationId))return '這則訊息已處理。';

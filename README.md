@@ -2,13 +2,13 @@
 
 因為沒錢買新 Mac，所以讓聊天式 AI 專案助理住進 Google Apps Script。
 
-從 Google Chat 或 LINE 用自然語言交辦工作；Gemini 理解需求，gas-claw 管理任務、記憶與排程，透過受控工具操作 Google Workspace，並在高風險動作前要求核准。電腦關機後，Apps Script trigger 仍可主動提醒。
+從 LINE 用自然語言交辦工作；Gemini 理解需求，gas-claw 管理任務、記憶與排程，透過受控工具操作 Google Workspace，並在高風險動作前要求核准。電腦關機後，Apps Script trigger 仍可主動提醒。
 
 > Inspired by the chat-first agent experience popularized by OpenClaw. gas-claw is independent: it is not an OpenClaw port and does not claim compatibility.
 
 ## Capabilities
 
-- Google Chat direct messages and LINE one-to-one messages.
+- LINE 一對一聊天、即時回覆與排程主動推播。
 - Deterministic Chinese commands for tasks, reminders, preferences, help, and completion.
 - Gemini JSON decision loop with a six-call ceiling and explicit tool registry.
 - Gmail search/drafts/send approval, Calendar read/create/update, Drive search/folder, Docs read/create, and Google Tasks list/create/complete.
@@ -31,7 +31,7 @@
 
 ## Quick start
 
-Requirements: Node.js 22+, a Google account, `clasp`, a Gemini Developer API key, and optionally a LINE Messaging API channel.
+Requirements: Node.js 22+, a Google account, `clasp`, a Gemini Developer API key, and a LINE Messaging API channel.
 
 ```bash
 git clone https://github.com/Wolke/gas-claw.git
@@ -70,7 +70,7 @@ See the dated [verification record](docs/VERIFICATION.md). Automated and Apps Sc
 ## Architecture
 
 ```text
-Google Chat / LINE
+LINE
         ↓
 Channel adapter → owner + event dedup
         ↓

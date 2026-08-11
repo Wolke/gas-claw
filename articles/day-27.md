@@ -23,11 +23,11 @@ interface ApprovalRequest {
 
 使用者回覆「核准 ID」或「拒絕 ID」。Runtime 檢查狀態、到期時間、channel 與 conversationId；真正呼叫工具前先把狀態改為 executing，完成後才改 approved，失敗則改 failed。第二次使用相同 ID 會被拒絕，因此併發點擊不會重放外部動作。
 
-Google Chat Cards 與 LINE postback 未來都可轉成相同文字命令或 action payload，因此核心狀態不依賴 UI。
+LINE postback 或 Flex Message 按鈕未來都可轉成相同文字命令或 action payload，因此核心狀態不依賴 UI。
 
 ## 動手試試看
 
-分別建立 `calendar.create`、`tasks.create` 與 `gmail.sendDraft` 三種 approval。確認摘要內容足以判斷影響，再依序測核准、拒絕和過期。把一個 Google Chat approval ID 複製到 LINE 使用，必須因 channel／conversation 不符而拒絕。
+分別建立 `calendar.create`、`tasks.create` 與 `gmail.sendDraft` 三種 approval。確認摘要內容足以判斷影響，再依序測核准、拒絕和過期。把一個 owner conversation 的 approval ID 放到另一個 LINE conversation 使用，必須因 conversation 不符而拒絕。
 
 最後對同一 ID 快速送出兩次核准。即使 webhook 併發，外部副作用也只能發生一次；正式實作應在狀態更新周圍使用 lock，並以 approval ID 作為冪等鍵。
 

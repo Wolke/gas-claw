@@ -16,7 +16,7 @@ Agent 先從 memory 取得工作時間與預設時區，再用 `calendar.list` �
 
 ## 動手試試看
 
-先把 personal memory 設為「工作時間 09:00–18:00、時區 Asia/Taipei」。在明天下午建立兩段 busy event，再從 Google Chat 說「幫我找明天下午半小時討論發布」。把 Agent 提出的三個時段與 Calendar 一一比對；任何重疊或超過下班時間都算失敗。
+先把 personal memory 設為「工作時間 09:00–18:00、時區 Asia/Taipei」。在明天下午建立兩段 busy event，再從 LINE 說「幫我找明天下午半小時討論發布」。把 Agent 提出的三個時段與 Calendar 一一比對；任何重疊或超過下班時間都算失敗。
 
 看到選項後不要完整複製，只回「第二個」。這一步驗證 session，而不是重新解析一個獨立命令。接著查看 approval summary，它至少要包含會議名稱、ISO 時間與人類可讀台北時間。核准前 Calendar event count 不變；核准後只增加一。
 

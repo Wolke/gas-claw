@@ -15,7 +15,7 @@
 ```ts
 interface IncomingMessage {
   id: string;
-  channel: 'google_chat' | 'line';
+  channel: 'line';
   userId: string;
   conversationId: string;
   replyToken?: string;
@@ -25,7 +25,7 @@ interface IncomingMessage {
 }
 ```
 
-不論訊息來自 Google Chat 或 LINE，Agent 只認識 `IncomingMessage`。渠道差異被限制在 adapter：LINE 有 reply token，Google Chat 使用 space name；但任務、記憶與核准邏輯不用各寫一份。
+Agent 只認識正規化後的 `IncomingMessage`。LINE webhook 的 event shape、reply token 與 source user 都被限制在 adapter；任務、記憶與核准邏輯不直接依賴外部 payload。
 
 Agent 的輸出也不是自由文字，而是提案：
 

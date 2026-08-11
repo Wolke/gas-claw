@@ -45,7 +45,7 @@ Google Tasks 是外部系統。讀取可自動，建立與完成被標為 write�
 
 測試新增後欄位完整、時間為 ISO 8601、預設 priority 是 normal。完成不存在與多筆同名時不應修改任何資料。列出任務時排除 done 和 cancelled。
 
-整合驗收在 Google Chat 新增任務，再從 LINE 列出。因為是單 owner 部署，資料可共用；但回覆與提醒仍回到來源渠道。
+整合驗收在 LINE 新增任務、列出任務並完成其中一筆；每一步都由同一個 owner conversation 操作，非 owner 不能讀取或修改資料。
 
 ## 發布素材
 

@@ -14,9 +14,9 @@
 | 6 | [clasp、TypeScript 與 esbuild](day-06.md) |
 | 7 | [初始化資料庫、觸發器與秘密](day-07.md) |
 | 8 | [最小但受控的 Gemini Agent Loop](day-08.md) |
-| 9 | [讓龍蝦住進 Google Chat](day-09.md) |
-| 10 | [LINE 第二聊天入口](day-10.md) |
-| 11 | [Channel Adapter](day-11.md) |
+| 9 | [建立 LINE Messaging API 頻道](day-09.md) |
+| 10 | [讓龍蝦住進 LINE](day-10.md) |
+| 11 | [LINE Webhook 的安全與冪等](day-11.md) |
 | 12 | [多輪對話與 Session](day-12.md) |
 | 13 | [保守的長期記憶](day-13.md) |
 | 14 | [Task 狀態機](day-14.md) |

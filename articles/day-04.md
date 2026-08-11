@@ -7,9 +7,8 @@
 整體分成 Channel、Agent、Policy、Tool、Repository、Scheduler 六層。Channel 只處理平台格式；Agent 組合上下文並詢問 Gemini；Policy 決定是否允許；Tool 封裝 Workspace 行為；Repository 保存可恢復狀態；Scheduler 負責主動工作。
 
 ```text
-Google Chat ─┐
-             ├─> Channel Adapter ─> Owner/Dedup ─> Agent
-LINE ────────┘                                  │
+LINE ─────────> Webhook Adapter ─> Owner/Dedup ─> Agent
+                                                │
                        ┌─────────────────────────┼─────────────┐
                        ↓                         ↓             ↓
                     Memory                   Tasks          Skills
@@ -37,7 +36,7 @@ LINE ────────┘                                  │
 6. Tool Registry 驗證每一個 tool call。
 7. read／draft 立即執行；write／send 產生 approval。
 8. 任務、排程、記憶候選與 run summary 寫入 Sheets。
-9. 將結果回到原渠道。
+9. 將結果回到 LINE conversation。
 
 把常見命令放在 deterministic parser，而不是每次都呼叫模型，有三個優點：回應更快、成本更低、測試更穩定。Gemini 留給跨服務與語意模糊的工作。
 
@@ -45,7 +44,7 @@ LINE ────────┘                                  │
 
 架構驗證採「每個邊界都能被否定」的方式：
 
-- 假 Google Chat 群組訊息應被拒絕。
+- LINE 群組或聊天室訊息應被拒絕。
 - 非 owner 的 LINE user ID 應被拒絕。
 - 同 event ID 第二次應回覆已處理。
 - 模型提出不存在的 `shell.exec` 應拋出 unknown tool。

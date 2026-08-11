@@ -21,7 +21,7 @@ npm run build
 npx clasp push
 ```
 
-接著在 Apps Script 設定 Properties、執行 `setupGasClaw()`、授權 scopes、部署 Web App，最後設定 Google Chat 或 LINE webhook。
+接著在 Apps Script 設定 Properties、執行 `setupGasClaw()`、授權 scopes、部署 Web App，最後設定 LINE webhook。LINE-first 版本不需要建立標準 Cloud 專案或 Google Chat App。
 
 最低成功路徑是：
 
@@ -36,7 +36,7 @@ npx clasp push
 
 ## 驗證
 
-最終 gate：TypeScript 無錯、所有測試通過、bundle 有七個 GAS entrypoints、30 篇文章全部超過最低長度且含固定驗證段落、GitHub Actions 綠燈、repository 無秘密。
+最終 gate：TypeScript 無錯、所有測試通過、bundle 有六個 GAS entrypoints、30 篇文章全部超過最低長度且含固定驗證段落、GitHub Actions 綠燈、repository 無秘密。
 
 實機方面，Apps Script 編輯器必須辨識入口；health endpoint 回 status ok；setup 建立五張表與單一 trigger；聊天訊息由 owner 成功處理；scheduler 能在電腦關閉時主動回報。
 

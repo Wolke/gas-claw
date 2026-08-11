@@ -1,7 +1,6 @@
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { parseDecision } from '../src/agent/gemini';
-import { parseLineEvent, verifyLineSignature } from '../src/channels/line';
-import { parseGoogleChatEvent } from '../src/channels/googleChat';
+import { parseLineEvent } from '../src/channels/line';
 import { assertOwner, redact, requiresApproval, sanitizeForLog } from '../src/security/policy';
 import { extractTime, parseLocalCommand } from '../src/agent/commands';
 import { ToolRegistry } from '../src/tools/registry';
@@ -21,17 +20,10 @@ describe('agent decision',()=>{
   it('rejects unsupported recurrence',()=>expect(()=>parseDecision('{"scheduleChanges":[{"action":"create","job":{"runAt":"2026-08-12T00:00:00.000Z","recurrence":"hourly","payload":{}}}]}')).toThrow('Invalid job recurrence'));
   it('rejects invalid memory scope',()=>expect(()=>parseDecision('{"memoryCandidates":[{"key":"k","value":"v","scope":"global"}]}')).toThrow('Invalid memory scope'));
 });
-describe('Google Chat adapter',()=>{
-  it('normalizes a direct message',()=>expect(parseGoogleChatEvent({type:'MESSAGE',message:{name:'spaces/s/messages/m',text:' hi ',sender:{name:'users/u'},space:{name:'spaces/s',type:'DM'}}})).toMatchObject({id:'spaces/s/messages/m',channel:'google_chat',userId:'users/u',conversationId:'spaces/s',text:'hi'}));
-  it('rejects spaces and group messages',()=>expect(()=>parseGoogleChatEvent({message:{name:'spaces/s/messages/m',text:'x',sender:{name:'users/u'},space:{name:'spaces/s',type:'SPACE'}}})).toThrow('Group conversations are disabled'));
-  it('rejects missing sender identity',()=>expect(()=>parseGoogleChatEvent({message:{text:'x',space:{type:'DM'}}})).toThrow('Invalid Google Chat event'));
-  it('rejects messages without a stable deduplication ID',()=>expect(()=>parseGoogleChatEvent({message:{text:'x',sender:{name:'users/u'},space:{name:'spaces/s',type:'DM'}}})).toThrow('Invalid Google Chat event'));
-});
 describe('LINE adapter',()=>{
   it('normalizes a direct text message',()=>expect(parseLineEvent({type:'message',webhookEventId:'e1',timestamp:0,replyToken:'r',source:{type:'user',userId:'u'},message:{type:'text',text:' hi '}})).toMatchObject({id:'e1',channel:'line',userId:'u',text:'hi'}));
   it('rejects groups',()=>expect(()=>parseLineEvent({type:'message',source:{type:'group'},message:{type:'text',text:'x'}})).toThrow());
   it('rejects events without a stable webhook ID',()=>expect(()=>parseLineEvent({type:'message',timestamp:0,replyToken:'r',source:{type:'user',userId:'u'},message:{type:'text',text:'x'}})).toThrow('Invalid LINE event'));
-  it('compares LINE signatures without an early character exit',()=>{vi.stubGlobal('Utilities',{computeHmacSha256Signature:()=>[1,2,3],base64Encode:()=> 'AQID'});expect(verifyLineSignature('body','AQID','secret')).toBe(true);expect(verifyLineSignature('body','AQIX','secret')).toBe(false);expect(verifyLineSignature('body','short','secret')).toBe(false)});
 });
 describe('policy',()=>{
   it('requires approval for external writes',()=>{expect(requiresApproval('read')).toBe(false);expect(requiresApproval('send')).toBe(true)});

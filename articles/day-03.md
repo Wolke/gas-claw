@@ -4,18 +4,17 @@
 
 「不買 Mac」不代表 Apps Script 完全等同一台伺服器。今天要拆解 GAS 能做什麼、不能做什麼，以及 `gas-claw` 如何利用事件驅動架構避開常駐程序的需求。
 
-傳統 Agent Gateway 會一直監聽聊天連線、維護記憶並跑 cron。GAS 沒有永遠不結束的 process，但它有三種喚醒方式：Web App 的 `doPost`、Google Chat 的 `onMessage`，以及時間驅動 trigger。每一次喚醒都是短生命週期執行；狀態則放在 Sheets、Properties、Cache 和 Drive。換句話說，我們不讓程式「一直醒著」，而是確保它隨時能從持久狀態恢復。
+傳統 Agent Gateway 會一直監聽聊天連線、維護記憶並跑 cron。GAS 沒有永遠不結束的 process，但它有兩種喚醒方式：LINE 呼叫 Web App 的 `doPost`，以及時間驅動 trigger。每一次喚醒都是短生命週期執行；狀態則放在 Sheets、Properties、Cache 和 Drive。換句話說，我們不讓程式「一直醒著」，而是確保它隨時能從持久狀態恢復。
 
 這種設計很像無伺服器函式：平常沒有程序，收到事件才執行。對個人專案助理而言，多數工作都是訊息、提醒、晨報或每週回顧，不需要毫秒級常駐連線，因此相當合適。
 
 ## 實作
 
-`gas-claw` 定義七個 Apps Script 頂層入口：
+`gas-claw` 定義六個 Apps Script 頂層入口：
 
 ```js
 function doGet(e) { /* health check */ }
-function doPost(e) { /* LINE or HTTP Chat webhook */ }
-function onMessage(e) { /* Google Chat app event */ }
+function doPost(e) { /* LINE webhook */ }
 function schedulerTick() { /* due jobs */ }
 function setupGasClaw() { /* database and trigger */ }
 function configureGasClaw(config) { /* script properties */ }

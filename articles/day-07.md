@@ -36,8 +36,6 @@ ScriptApp.newTrigger('schedulerTick')
 ```text
 GEMINI_API_KEY
 GEMINI_MODEL
-GOOGLE_CHAT_OWNER_ID
-GOOGLE_CHAT_WEBHOOK_TOKEN
 LINE_OWNER_ID
 LINE_CHANNEL_ACCESS_TOKEN
 LINE_WEBHOOK_TOKEN
@@ -66,6 +64,6 @@ LINE_WEBHOOK_TOKEN
 
 ## 安全與限制
 
-Apps Script 第一次執行會要求 Gmail、Calendar、Drive、Sheets、Tasks 等 OAuth scopes。這些權限很大，所以必須使用「每人部署自己的副本」模式；不要把這個版本架成公開多租戶服務。
+Apps Script 第一次執行會要求 Gmail、Calendar、Drive、Sheets、Tasks 等 OAuth scopes。這些權限很大，所以必須使用「每人部署自己的副本」模式；不要把這個版本架成公開多租戶服務。LINE-first 版本不要求 Chat scope，也不需要安裝者建立標準 Google Cloud 專案或 OAuth 測試使用者。
 
 owner ID 是第二道防線。即使別人取得 webhook URL，只要 user ID 不符，Agent 也拒絕執行。LINE 還需要長隨機 webhook token。Properties 不會出現在公開程式碼，但專案擁有者仍能看到，因此不要共享 Apps Script project 的編輯權。下一篇接上 Gemini。

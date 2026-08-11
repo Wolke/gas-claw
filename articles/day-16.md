@@ -2,7 +2,7 @@
 
 ## 今天要完成什麼
 
-聊天機器人通常只在收到訊息後回覆；個人助理則必須在時間到了主動出現。今天完成 Apps Script minute trigger、到期工作查詢、LINE／Google Chat push 與重試策略。
+聊天機器人通常只在收到訊息後回覆；個人助理則必須在時間到了主動出現。今天完成 Apps Script minute trigger、到期工作查詢、LINE push 與重試策略。
 
 「每分鐘觸發」不是每個任務各建一個 trigger。Apps Script trigger 數量有限，管理大量 trigger 也困難。`gas-claw` 只保留一個 scheduler trigger，再從 Jobs sheet 找到期項目。
 
@@ -12,7 +12,7 @@
 
 單次 reminder 發送成功後改為 completed。recurrence 為 daily 或 weekly 時，分別增加一天或七天並保持 active。發送失敗增加 attempts；第三次後轉為 failed，避免每分鐘無限轟炸 API。
 
-LINE 主動訊息使用 push endpoint；Google Chat 使用 `chat.googleapis.com/v1/{space}/messages` 與 Apps Script OAuth token。destination 在建立 job 時保存原 channel 和 conversationId。
+LINE 主動訊息使用 push endpoint；destination 在建立 job 時保存 owner conversationId，推播以 `X-Line-Retry-Key` 防止模糊失敗後重複送出。
 
 ## 動手試試看
 
@@ -28,7 +28,7 @@ LINE 主動訊息使用 push endpoint；Google Chat 使用 `chat.googleapis.com/
 
 ## 發布素材
 
-- 聊天 Demo：建立一分鐘後提醒，關掉電腦後由原渠道收到 push。
+- 聊天 Demo：建立一分鐘後提醒，關掉電腦後由 LINE 收到 push。
 - 設計焦點：到期挑選、lease、retry、recurrence 與 destination。
 - 測試／失敗案例：同一 tick 重跑不得重複執行 agent work。
 - 當日 Git tag：`day-16`。下一篇建立 Tool Registry。
@@ -37,4 +37,4 @@ LINE 主動訊息使用 push endpoint；Google Chat 使用 `chat.googleapis.com/
 
 排程推送只允許送回 owner 的既有 destination，不接受 Gemini 任意指定陌生 user ID。大量通知也可能觸發 LINE 或 Chat 配額，因此每次 tick 有上限。
 
-Apps Script 時間 trigger 不保證整點零秒執行，適合提醒與晨報，不適合交易或醫療警報。Google Chat 主動訊息還需要正確 Chat app OAuth 設定；部署文件必須把這項前置條件列出。下一篇進入 Workspace tool calling。
+Apps Script 時間 trigger 不保證整點零秒執行，適合提醒與晨報，不適合交易或醫療警報。LINE push 需要有效 channel access token，並受官方訊息方案與 API 配額約束。下一篇進入 Workspace tool calling。

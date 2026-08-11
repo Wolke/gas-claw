@@ -5,7 +5,6 @@ await mkdir('dist', { recursive: true });
 const entrypoints = `
 function doGet(e) { return GasClawBundle.GasClaw.doGet(e); }
 function doPost(e) { return GasClawBundle.GasClaw.doPost(e); }
-function onMessage(e) { return GasClawBundle.GasClaw.onMessage(e); }
 function schedulerTick() { return GasClawBundle.GasClaw.schedulerTick(); }
 function setupGasClaw() { return GasClawBundle.GasClaw.setupGasClaw(); }
 function configureGasClaw(config) { return GasClawBundle.GasClaw.configureGasClaw(config); }

@@ -34,7 +34,7 @@ npm run check
 產品的最小資料流如下：
 
 ```text
-Google Chat／LINE → Channel Adapter → Agent → Policy → Workspace Tool
+LINE → Webhook Adapter → Agent → Policy → Workspace Tool
                                       ↓
                            Task／Memory／Schedule
 ```

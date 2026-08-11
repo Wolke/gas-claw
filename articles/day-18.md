@@ -24,13 +24,13 @@ manifest：
 
 ## 動手試試看
 
-先在 Apps Script 左側服務清單確認 Tasks 已出現，再於 Google Cloud project 檢查 API 是否啟用。傳送「列出我的 Google Tasks」，確認 read 工具能直接回覆。接著要求新增「驗證 Advanced Service」，在 Approvals sheet 找到 pending row；核准前打開 Google Tasks 應完全沒有新項目。
+先在 Apps Script 左側服務清單確認 Tasks 已出現；使用預設 Cloud project 時，Apps Script 會隨 Advanced Service 設定管理對應 API。傳送「列出我的 Google Tasks」，確認 read 工具能直接回覆。接著要求新增「驗證 Advanced Service」，在 Approvals sheet 找到 pending row；核准前打開 Google Tasks 應完全沒有新項目。
 
 核准後比對回傳 task ID 與 Google Tasks UI。再要求完成這筆 Google Task，確認第二次核准前狀態仍未改變，核准後才出現在已完成清單。複製同一核准命令重送，預期只得到「找不到有效的待核准操作」。這一步驗證一次性，而不只是 API 串接成功。
 
 ## 驗證
 
-在 Google Chat 傳「把『整理提案』加入 Google Tasks」。預期先收到 approval ID，而 Google Tasks 尚未出現。回覆核准後才新增；重複回覆同 ID 應顯示無有效待核准操作，不能新增第二筆。
+在 LINE 傳「把『整理提案』加入 Google Tasks」。預期先收到 approval ID，而 Google Tasks 尚未出現。回覆核准後才新增；重複回覆同 ID 應顯示無有效待核准操作，不能新增第二筆。
 
 拒絕流程也要測：Approval 狀態改 rejected，Tasks 不變。過期 ID 改 expired。建立與完成各自有獨立 approval，不能用核准建立的 ID 順便完成。
 

@@ -4,7 +4,6 @@
 
 ```mermaid
 flowchart LR
-  C[Google Chat] --> W[doPost]
   L[LINE] --> W
   W --> A[Agent loop]
   A --> G[Gemini API]
@@ -13,7 +12,6 @@ flowchart LR
   A --> S[(Sheets store)]
   R[Minute trigger] --> J[Scheduler]
   J --> A
-  J --> C
   J --> L
 ```
 
