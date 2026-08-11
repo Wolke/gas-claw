@@ -2,7 +2,7 @@
 
 ## 今天要完成什麼
 
-Human-in-the-loop 不是多一個「確定嗎」視窗，而是一個可恢復、不可重複使用、有來源約束的狀態機。今天完整處理 pending、approved、rejected、expired。
+Human-in-the-loop 不是多一個「確定嗎」視窗，而是一個可恢復、不可重複使用、有來源約束的狀態機。今天完整處理 pending、executing、approved、rejected、expired 與 failed。
 
 Approval 保存 tool call，而不是模型產生的任意文字。核准時重新從 registry 取得工具與驗證參數，確保程式版本與政策仍有效。
 
@@ -15,13 +15,13 @@ interface ApprovalRequest {
   summary: string;
   risk: 'write'|'send'|'delete'|'share';
   expiresAt: string;
-  status: 'pending'|'approved'|'rejected'|'expired';
+  status: 'pending'|'executing'|'approved'|'rejected'|'expired'|'failed';
   channel: Channel;
   conversationId: string;
 }
 ```
 
-使用者回覆「核准 ID」或「拒絕 ID」。Runtime 檢查狀態、到期時間、channel 與 conversationId；核准成功後立刻將狀態改 approved。第二次使用相同 ID 會被拒絕。
+使用者回覆「核准 ID」或「拒絕 ID」。Runtime 檢查狀態、到期時間、channel 與 conversationId；真正呼叫工具前先把狀態改為 executing，完成後才改 approved，失敗則改 failed。第二次使用相同 ID 會被拒絕，因此併發點擊不會重放外部動作。
 
 Google Chat Cards 與 LINE postback 未來都可轉成相同文字命令或 action payload，因此核心狀態不依賴 UI。
 

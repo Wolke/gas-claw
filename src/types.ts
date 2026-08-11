@@ -8,7 +8,7 @@ export interface ScheduledJob { id:string; type:'reminder'|'agent_run'|'daily_br
 export interface TaskChange { action:'create'|'update'; task:Partial<Task>&{title?:string;id?:string} }
 export interface ScheduleChange { action:'create'|'pause'; job:Partial<ScheduledJob> }
 export interface MemoryCandidate { key:string; value:string; scope:'personal'|'project' }
-export interface ApprovalRequest { id:string; action:ToolCall; summary:string; risk:Exclude<Risk,'read'|'draft'>; expiresAt:string; status:'pending'|'approved'|'rejected'|'expired'; channel:Channel; conversationId:string }
+export interface ApprovalRequest { id:string; action:ToolCall; summary:string; risk:Exclude<Risk,'read'|'draft'>; expiresAt:string; status:'pending'|'executing'|'approved'|'rejected'|'expired'|'failed'; channel:Channel; conversationId:string }
 export interface AgentContext { message:IncomingMessage; now:string }
 export interface AgentTool { name:string; description:string; risk:Risk; validate(input:unknown):Record<string,unknown>; execute(input:Record<string,unknown>, context:AgentContext):unknown }
 export interface GasClawConfig { geminiApiKey:string; geminiModel?:string; googleChatOwnerId?:string; lineOwnerId?:string; lineChannelAccessToken?:string; lineWebhookToken?:string; timeZone?:string }

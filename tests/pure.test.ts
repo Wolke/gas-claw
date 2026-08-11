@@ -10,6 +10,8 @@ import { nextRun } from '../src/scheduler';
 describe('agent decision',()=>{
   it('fills optional collections',()=>expect(parseDecision('{"response":"ok"}')).toEqual({response:'ok',toolCalls:[],taskChanges:[],scheduleChanges:[],memoryCandidates:[]}));
   it('accepts fenced json',()=>expect(parseDecision('```json\n{"toolCalls":[]}\n```').toolCalls).toEqual([]));
+  it('rejects non-array tool calls',()=>expect(()=>parseDecision('{"toolCalls":"gmail.search"}')).toThrow('must be an array'));
+  it('rejects array decisions',()=>expect(()=>parseDecision('[]')).toThrow('must be an object'));
 });
 describe('LINE adapter',()=>{
   it('normalizes a direct text message',()=>expect(parseLineEvent({type:'message',webhookEventId:'e1',timestamp:0,replyToken:'r',source:{type:'user',userId:'u'},message:{type:'text',text:' hi '}})).toMatchObject({id:'e1',channel:'line',userId:'u',text:'hi'}));

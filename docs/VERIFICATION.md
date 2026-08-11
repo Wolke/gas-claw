@@ -7,10 +7,12 @@ Last updated: 2026-08-11 (Asia/Taipei)
 Command: `npm run check`
 
 - TypeScript strict typecheck: passed.
-- Vitest: 29 tests passed across pure logic and a mocked Apps Script runtime.
+- Vitest: 31 tests passed across pure logic and a mocked Apps Script runtime.
 - Runtime scenarios: owner rejection, task create/list/complete, webhook deduplication, reminders, memory update.
 - Security scenarios: unknown tool rejection, risk approval classification, secret redaction, LINE group rejection.
 - Scheduler scenarios: one-shot, daily and weekly recurrence.
+- Gemini decision validation: malformed object and array shapes are rejected.
+- Delivery safety: scheduled Agent output is checkpointed before channel push, so retry does not repeat Agent work.
 - Bundle: built by esbuild.
 - Artifact verifier: seven Apps Script entrypoints detected.
 - Article verifier: 30 article files, each over 1,200 characters with implementation, verification, and safety sections.
