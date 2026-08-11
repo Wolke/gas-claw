@@ -1,0 +1,19 @@
+name: CI
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - name: Secret scan
+        run: '! git grep -En "(AIza[0-9A-Za-z_-]{20,}|LINE_CHANNEL_ACCESS_TOKEN[[:space:]]*[:=][[:space:]]*[^$])" -- . ":(exclude)package-lock.json"'

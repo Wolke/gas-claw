@@ -1,0 +1,3 @@
+import { initializeStore } from '../repositories/store';
+export function setupGasClaw(){ const url=initializeStore(); ScriptApp.getProjectTriggers().filter(t=>t.getHandlerFunction()==='schedulerTick').forEach(t=>ScriptApp.deleteTrigger(t)); ScriptApp.newTrigger('schedulerTick').timeBased().everyMinutes(1).create(); return `gas-claw initialized: ${url}`; }
+export function uninstallGasClaw(){ ScriptApp.getProjectTriggers().forEach(t=>ScriptApp.deleteTrigger(t)); PropertiesService.getScriptProperties().deleteAllProperties(); return 'Triggers and script properties removed. Database spreadsheet was retained.'; }
