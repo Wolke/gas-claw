@@ -25,11 +25,11 @@ Test project: `gas-claw-e2e-20260811`
 - `clasp push`: passed; manifest and bundle accepted.
 - Advanced Google Tasks service: visible in Apps Script editor.
 - Static entrypoint discovery: passed after build shim fix; Apps Script function selector displays `doGet` and the other top-level handlers.
-- Deployment versions 1–3: created successfully.
+- Deployment versions 1–4: created successfully; version 4 contains the current `0.2.0` bundle.
 
 ## Awaiting account consent
 
-The final live execution, database initialization, public `/exec` health response, Google Chat delivery, LINE delivery, and real Workspace write approval require the project owner to accept the Apps Script OAuth consent prompt and provide personal Gemini/LINE credentials. Automated browser attempts reached the consent prompt but did not accept it because granting persistent access requires explicit user confirmation.
+The final live execution, database initialization, public `/exec` health response, Google Chat delivery, LINE delivery, and real Workspace write approval require the project owner to accept the Apps Script OAuth consent prompt and provide personal Gemini/LINE credentials. Automated browser attempts reached the consent prompt but did not accept it because granting persistent access requires explicit user confirmation. Before consent, the version 4 `/exec` endpoint correctly remains inaccessible with HTTP 403.
 
 These items must not be reported as production-verified until the checklist below has evidence:
 
