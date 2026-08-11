@@ -2,7 +2,14 @@
 
 This guide installs one private gas-claw copy for one Google account. Do not use this release as a shared multi-tenant bot.
 
-## 1. Build and create the Apps Script project
+## Choose a permission profile
+
+- **Core (recommended):** LINE, Gemini, local tasks, memory and scheduler. It requests external requests, trigger management and one gas-claw Sheets database. This is the promotion-friendly default.
+- **Full (optional):** Adds Gmail, Calendar, Drive, Docs, Sheets tools and Google Tasks. It requests sensitive or restricted Workspace scopes and can show Google's unverified-app warning for a personal script.
+
+Start with Core. You can upgrade the same copy to Full later; Apps Script will ask for the additional permissions at that time.
+
+## 1. Build Core and create the Apps Script project
 
 ```bash
 git clone https://github.com/Wolke/gas-claw.git
@@ -21,7 +28,7 @@ If `clasp create` did not produce the intended file, copy `.clasp.json.example` 
 
 Open the Apps Script project. Choose `setupGasClaw` from the function selector, run it, review the requested Google scopes, and allow access for your own script. A spreadsheet named `gas-claw database` and one minute trigger will be created.
 
-The explicit manifest scopes cover external requests, triggers, Sheets, Gmail, Calendar, Drive, Docs, and Google Tasks. The LINE-first edition does not request Google Chat scopes and does not require users to create or attach a standard Google Cloud project.
+The Core manifest requests external requests, trigger management and Sheets. It deliberately excludes Gmail, Calendar, Drive, Docs and Google Tasks. The LINE-first edition does not require users to create or attach a standard Google Cloud project.
 
 Run setup a second time to verify it is idempotent: the database URL should remain the same and there should still be one scheduler trigger.
 
@@ -36,6 +43,7 @@ Open **Project Settings → Script Properties**. Add only the channels you use:
 | `LINE_OWNER_ID` | yes | Allowed LINE user ID |
 | `LINE_CHANNEL_ACCESS_TOKEN` | yes | Reply and push token |
 | `LINE_WEBHOOK_TOKEN` | yes | At least 32 random bytes encoded as hex or base64url |
+| `WORKSPACE_TOOLS_ENABLED` | no | Leave unset or `false` for Core; set `true` only after deploying Full |
 
 Never put these values in source, Sheets, screenshots, articles, or GitHub Actions.
 
@@ -66,14 +74,27 @@ Paste the tokenized `/exec` URL into the LINE Messaging API webhook URL field, p
 1 分鐘後提醒我安裝完成
 ```
 
-Then test one read tool and one approval-gated write:
+Core should answer those deterministic commands without exposing Gmail, Calendar, Drive, Docs or Google Tasks tools to Gemini.
+
+## 7. Optional Full Workspace profile
+
+Review [`appsscript.full.json`](../appsscript.full.json), then build and push the opt-in manifest:
+
+```bash
+npm run build:full
+npx clasp push
+```
+
+Refresh Apps Script, run `setupGasClaw` once, and review the additional Gmail, Calendar, Drive, Docs and Tasks permissions. Set `WORKSPACE_TOOLS_ENABLED=true` only after that authorization succeeds, then create a new web-app deployment version. The feature flag and Full manifest are both required; this prevents a Core installation from advertising tools it cannot execute.
+
+Test one read tool and one approval-gated write:
 
 ```text
 列出我明天的行程
 把「驗收 gas-claw」加入 Google Tasks
 ```
 
-The second request must remain pending until you reply with its approval command.
+The second request must remain pending until you reply with its approval command. If Google blocks the Full authorization rather than showing an unverified-app continuation, stay on Core; do not weaken account security settings merely to enable optional tools.
 
 ## Upgrade
 

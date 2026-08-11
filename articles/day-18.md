@@ -4,6 +4,8 @@
 
 `gas-claw` 自己有 Tasks sheet，但很多人已使用 Google Tasks。今天透過 Apps Script Advanced Service 列出、建立與完成待辦，並保留外部寫入核准。
 
+本篇開始使用選配 Full profile。先執行 `npm run build:full`、推送 manifest、完成新增 scopes 授權，再設定 `WORKSPACE_TOOLS_ENABLED=true`。尚未完成這三步時，Core 仍可管理自己的 Tasks sheet，但不會向 Gemini 宣告 Google Tasks 工具。
+
 Advanced Service 必須同時在 manifest 宣告、Apps Script 專案服務清單啟用，有些帳號還需在對應 Cloud project 啟用 Tasks API。
 
 ## 實作

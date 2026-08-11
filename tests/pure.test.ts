@@ -43,14 +43,15 @@ describe('local commands',()=>{
   it('rejects invalid clock time',()=>expect(extractTime('明天 25 點 做簡報',now).at).toBeUndefined());
 });
 describe('tool registry',()=>{
-  it('exposes only explicit tools',()=>{const r=new ToolRegistry();expect(r.get('gmail.search')?.risk).toBe('read');expect(r.get('sheets.append')?.risk).toBe('write');expect(r.get('messaging.notifyOwner')?.risk).toBe('send');expect(r.get('shell.exec')).toBeUndefined();expect(r.declarations().length).toBeGreaterThanOrEqual(15)});
-  it('validates required input',()=>expect(()=>new ToolRegistry().get('calendar.create')!.validate({title:'x'})).toThrow('Missing start'));
-  it('rejects reversed calendar periods',()=>expect(()=>new ToolRegistry().get('calendar.create')!.validate({title:'x',start:'2026-08-12T02:00:00Z',end:'2026-08-12T01:00:00Z'})).toThrow('end must be after start'));
-  it('rejects malformed email recipients',()=>expect(()=>new ToolRegistry().get('gmail.createDraft')!.validate({to:'not-an-email',subject:'x',body:'y'})).toThrow('Invalid to'));
-  it('exposes thread reading as a read-only tool',()=>{const tool=new ToolRegistry().get('gmail.readThread')!;expect(tool.risk).toBe('read');expect(()=>tool.validate({})).toThrow('Missing threadId');expect(tool.validate({threadId:'thread-123'})).toMatchObject({threadId:'thread-123'})});
-  it('caps Sheets row width and cell types',()=>{const tool=new ToolRegistry().get('sheets.append')!;expect(()=>tool.validate({spreadsheetId:'abc',sheetName:'S',values:[]})).toThrow('1 to 100');expect(()=>tool.validate({spreadsheetId:'abc',sheetName:'S',values:[{formula:'x'}]})).toThrow('unsupported')});
-  it('validates Google Tasks due dates',()=>expect(()=>new ToolRegistry().get('tasks.create')!.validate({title:'x',due:'later'})).toThrow('Invalid due'));
-  it('requires a valid Google Task ID before completion',()=>{const tool=new ToolRegistry().get('tasks.complete')!;expect(tool.risk).toBe('write');expect(()=>tool.validate({taskId:'bad/id'})).toThrow('Invalid taskId');expect(tool.validate({taskId:'task_123'})).toMatchObject({taskId:'task_123'})});
+  it('keeps optional Workspace tools disabled in the promotion profile',()=>{const r=new ToolRegistry();expect(r.get('gmail.search')).toBeUndefined();expect(r.get('calendar.list')).toBeUndefined();expect(r.get('messaging.notifyOwner')?.risk).toBe('send');expect(r.declarations()).toHaveLength(1)});
+  it('exposes only explicit tools in the full profile',()=>{const r=new ToolRegistry(true);expect(r.get('gmail.search')?.risk).toBe('read');expect(r.get('sheets.append')?.risk).toBe('write');expect(r.get('messaging.notifyOwner')?.risk).toBe('send');expect(r.get('shell.exec')).toBeUndefined();expect(r.declarations().length).toBeGreaterThanOrEqual(15)});
+  it('validates required input',()=>expect(()=>new ToolRegistry(true).get('calendar.create')!.validate({title:'x'})).toThrow('Missing start'));
+  it('rejects reversed calendar periods',()=>expect(()=>new ToolRegistry(true).get('calendar.create')!.validate({title:'x',start:'2026-08-12T02:00:00Z',end:'2026-08-12T01:00:00Z'})).toThrow('end must be after start'));
+  it('rejects malformed email recipients',()=>expect(()=>new ToolRegistry(true).get('gmail.createDraft')!.validate({to:'not-an-email',subject:'x',body:'y'})).toThrow('Invalid to'));
+  it('exposes thread reading as a read-only tool',()=>{const tool=new ToolRegistry(true).get('gmail.readThread')!;expect(tool.risk).toBe('read');expect(()=>tool.validate({})).toThrow('Missing threadId');expect(tool.validate({threadId:'thread-123'})).toMatchObject({threadId:'thread-123'})});
+  it('caps Sheets row width and cell types',()=>{const tool=new ToolRegistry(true).get('sheets.append')!;expect(()=>tool.validate({spreadsheetId:'abc',sheetName:'S',values:[]})).toThrow('1 to 100');expect(()=>tool.validate({spreadsheetId:'abc',sheetName:'S',values:[{formula:'x'}]})).toThrow('unsupported')});
+  it('validates Google Tasks due dates',()=>expect(()=>new ToolRegistry(true).get('tasks.create')!.validate({title:'x',due:'later'})).toThrow('Invalid due'));
+  it('requires a valid Google Task ID before completion',()=>{const tool=new ToolRegistry(true).get('tasks.complete')!;expect(tool.risk).toBe('write');expect(()=>tool.validate({taskId:'bad/id'})).toThrow('Invalid taskId');expect(tool.validate({taskId:'task_123'})).toMatchObject({taskId:'task_123'})});
 });
 describe('skills',()=>{
   it('ships six project-management skills',()=>expect(SKILLS).toHaveLength(6));

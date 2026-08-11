@@ -6,6 +6,8 @@
 
 建立草稿被標為 draft risk，可以自動執行，因為草稿不會送到外部；`gmail.sendDraft` 是 send risk，永遠進 Approval。
 
+Gmail 是 Full profile 中最敏感的選配能力，也最可能觸發 unverified-app 警告或帳號政策封鎖。推廣版不在首次安裝要求它；若 Google 直接封鎖 Full 授權，維持 Core 即可，不應叫讀者關閉帳號安全保護。
+
 ## 實作
 
 `gmail.search` 接收 Gmail query，例如：

@@ -6,6 +6,8 @@
 
 第一版用預設 Calendar，不處理跨組織 FreeBusy API。Agent 先讀取指定區間事件，再依工作時間提出空檔；使用者選定後才提出 `calendar.create`。
 
+Calendar 屬於 Full profile。Core 使用者不會在首次安裝看到 Calendar scope，也不能只靠設定 feature flag 取得權限；必須先部署 Full manifest 並完成 Apps Script 授權。
+
 ## 實作
 
 `calendar.list` 需要 start、end，回傳 id、title、start、end，不送出不必要的完整描述。`calendar.create` 需要 title、start、end，可帶 description。`calendar.update` 至少需要 eventId，title 或新時間為選填。

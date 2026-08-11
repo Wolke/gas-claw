@@ -17,6 +17,12 @@ flowchart LR
 
 Messages are normalized before entering the agent. Model output is treated as a proposal: only registered tools can run, write/send actions pause for approval, and external document content cannot alter policy.
 
+## Permission profiles
+
+The default Core profile exposes LINE messaging plus deterministic tasks, memory and scheduling. Its manifest requests external requests, trigger management and Sheets only. Optional Workspace tools are absent from Gemini's declarations, so the model cannot call code the user did not authorize.
+
+The Full profile uses `appsscript.full.json`, enables Google Tasks Advanced Service and adds Gmail, Calendar, Drive, Docs and Tasks scopes. `WORKSPACE_TOOLS_ENABLED=true` must also be set explicitly. Building a Full manifest without the feature flag leaves those tools unavailable; setting the flag while deploying Core causes tool calls to fail authorization rather than silently gaining access.
+
 The scheduler holds `LockService` only while claiming at most ten due jobs. Claimed jobs enter `running` with a five-minute lease; Gemini calls and channel delivery happen after releasing the lock. A crashed execution is reclaimable after lease expiry, and its checkpointed delivery UUID prevents duplicate push messages.
 
 ## Workspace integration strategy

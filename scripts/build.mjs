@@ -11,4 +11,6 @@ function configureGasClaw(config) { return GasClawBundle.GasClaw.configureGasCla
 function uninstallGasClaw() { return GasClawBundle.GasClaw.uninstallGasClaw(); }
 `;
 await build({ entryPoints: ['src/index.ts'], bundle: true, outfile: 'dist/Code.js', format: 'iife', globalName: 'GasClawBundle', platform: 'neutral', target: 'es2020', footer: { js: entrypoints } });
-await cp('appsscript.json', 'dist/appsscript.json');
+const profile=process.argv.includes('--profile=full')?'full':'core';
+await cp(profile==='full'?'appsscript.full.json':'appsscript.json', 'dist/appsscript.json');
+console.log(`Built ${profile} profile.`);

@@ -21,7 +21,9 @@ npm run build
 npx clasp push
 ```
 
-接著在 Apps Script 設定 Properties、執行 `setupGasClaw()`、授權 scopes、部署 Web App，最後設定 LINE webhook。LINE-first 版本不需要建立標準 Cloud 專案或 Google Chat App。
+接著先以預設 Core manifest 在 Apps Script 設定 Properties、執行 `setupGasClaw()`、授權最低 scopes、部署 Web App，最後設定 LINE webhook。LINE-first Core 不需要標準 Cloud 專案，也不會在第一次安裝要求 Gmail restricted scope。
+
+Core 驗收通過後才執行 `npm run build:full`，檢視新增的 Gmail、Calendar、Drive、Docs、Tasks 權限並重新授權，最後設定 `WORKSPACE_TOOLS_ENABLED=true`。若帳號政策封鎖 Full，Core 驗收仍可獨立成立，但不可把 Workspace 工具標成實機通過。
 
 最低成功路徑是：
 
