@@ -32,7 +32,7 @@ describe('local commands',()=>{
   it('rejects invalid clock time',()=>expect(extractTime('明天 25 點 做簡報',now).at).toBeUndefined());
 });
 describe('tool registry',()=>{
-  it('exposes only explicit tools',()=>{const r=new ToolRegistry();expect(r.get('gmail.search')?.risk).toBe('read');expect(r.get('shell.exec')).toBeUndefined();expect(r.declarations().length).toBeGreaterThanOrEqual(10)});
+  it('exposes only explicit tools',()=>{const r=new ToolRegistry();expect(r.get('gmail.search')?.risk).toBe('read');expect(r.get('sheets.append')?.risk).toBe('write');expect(r.get('messaging.notifyOwner')?.risk).toBe('send');expect(r.get('shell.exec')).toBeUndefined();expect(r.declarations().length).toBeGreaterThanOrEqual(15)});
   it('validates required input',()=>expect(()=>new ToolRegistry().get('calendar.create')!.validate({title:'x'})).toThrow('Missing start'));
 });
 describe('skills',()=>{
