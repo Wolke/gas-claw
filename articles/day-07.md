@@ -64,8 +64,8 @@ LINE_WEBHOOK_TOKEN
 
 ## 安全與限制
 
-為了推廣，預設 Core manifest 只要求 external request、trigger 管理與 gas-claw Sheets 資料庫。Gmail、Calendar、Drive、Docs、Tasks 不在第一次授權畫面，也不會出現在 Gemini 的 tool declarations。讀者日後主動執行 `npm run build:full` 並設定 `WORKSPACE_TOOLS_ENABLED=true`，才會進入完整 Workspace 授權。LINE-first 版本不需要標準 Google Cloud 專案或 OAuth 測試使用者。
+完整版本會要求 Gmail、Calendar、Drive、Docs、Sheets、Tasks 等 scopes，因此安裝者要先建立標準 Google Cloud 專案、設定 External Testing OAuth audience，並把自己的帳號加入 test users。這是一個一次性的進階安裝步驟，但能讓每個 owner 清楚知道 GAS 取得哪些 Google Workspace 權限。
 
-Core／Full 分層不是用說明文字隱藏按鈕，而是兩份 manifest 加上 runtime feature gate。這能避免首次安裝因 Gmail restricted scope 被 Google 封鎖，也符合最小權限原則。Full 仍只適合每人部署自己的副本；不要把它架成公開多租戶服務。
+這些權限很大，所以只適合「每人部署自己的副本」；不要把這個版本架成公開多租戶服務。LINE-first 版本不要求任何 Google Chat scope，但保留完整 Google 生態系工具，這也更符合系列的專案管理主題。
 
 owner ID 是第二道防線。即使別人取得 webhook URL，只要 user ID 不符，Agent 也拒絕執行。LINE 還需要長隨機 webhook token。Properties 不會出現在公開程式碼，但專案擁有者仍能看到，因此不要共享 Apps Script project 的編輯權。下一篇接上 Gemini。

@@ -21,9 +21,9 @@ npm run build
 npx clasp push
 ```
 
-接著先以預設 Core manifest 在 Apps Script 設定 Properties、執行 `setupGasClaw()`、授權最低 scopes、部署 Web App，最後設定 LINE webhook。LINE-first Core 不需要標準 Cloud 專案，也不會在第一次安裝要求 Gmail restricted scope。
+接著建立標準 Google Cloud 專案、設定 OAuth consent 與 test user、啟用 Gmail／Calendar／Drive／Docs／Sheets／Tasks API，再綁定 Apps Script。完成完整 scopes 授權後執行 `setupGasClaw()`、設定 Properties、部署 Web App，最後設定 LINE webhook。
 
-Core 驗收通過後才執行 `npm run build:full`，檢視新增的 Gmail、Calendar、Drive、Docs、Tasks 權限並重新授權，最後設定 `WORKSPACE_TOOLS_ENABLED=true`。若帳號政策封鎖 Full，Core 驗收仍可獨立成立，但不可把 Workspace 工具標成實機通過。
+這個流程比低權限聊天 Bot 多幾步，但完整 Google 生態系正是題目的差異化：電腦關機後，LINE 上的一句話仍能讓 GAS 查郵件、排會議、讀文件、管理任務並按時回報。安裝複雜度必須用逐步截圖、失敗排查與三十分鐘驗收指標控制，而不是刪掉核心能力。
 
 最低成功路徑是：
 

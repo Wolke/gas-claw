@@ -11,4 +11,4 @@ export interface MemoryCandidate { key:string; value:string; scope:'personal'|'p
 export interface ApprovalRequest { id:string; action:ToolCall; summary:string; risk:Exclude<Risk,'read'|'draft'>; expiresAt:string; status:'pending'|'executing'|'approved'|'rejected'|'expired'|'failed'; channel:Channel; conversationId:string }
 export interface AgentContext { message:IncomingMessage; now:string }
 export interface AgentTool { name:string; description:string; risk:Risk; validate(input:unknown):Record<string,unknown>; execute(input:Record<string,unknown>, context:AgentContext):unknown }
-export interface GasClawConfig { geminiApiKey:string; geminiModel?:string; lineOwnerId?:string; lineChannelAccessToken?:string; lineWebhookToken?:string; workspaceToolsEnabled?:boolean; timeZone?:string }
+export interface GasClawConfig { geminiApiKey:string; geminiModel?:string; lineOwnerId?:string; lineChannelAccessToken?:string; lineWebhookToken?:string; timeZone?:string }

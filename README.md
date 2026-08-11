@@ -11,8 +11,7 @@
 - LINE 一對一聊天、即時回覆與排程主動推播。
 - Deterministic Chinese commands for tasks, reminders, preferences, help, and completion.
 - Gemini JSON decision loop with a six-call ceiling and explicit tool registry.
-- Promotion-friendly Core profile requests only external requests, triggers and Sheets.
-- Optional Full profile adds Gmail search/drafts/send approval, Calendar read/create/update, Drive search/folder, Docs read/create, and Google Tasks list/create/complete.
+- Gmail search/drafts/send approval, Calendar read/create/update, Drive search/folder, Docs read/create, and Google Tasks list/create/complete.
 - Sheets-backed tasks, schedules, approvals, memory, and run summaries.
 - Minute scheduler with lock, retry ceiling, daily/weekly recurrence, and source-channel delivery.
 - Single-use approval state bound to its source channel and conversation.
@@ -45,7 +44,7 @@ npm run build
 npx clasp push
 ```
 
-Then authorize and run `setupGasClaw`, add Script Properties, and deploy the Web App. The default Core profile avoids restricted Gmail scopes; choose Full only when you explicitly want Workspace automation. Follow the complete [installation guide](docs/INSTALL.md).
+Then authorize and run `setupGasClaw`, add Script Properties, and deploy the Web App. The one-time installation uses a standard Google Cloud project so the owner can explicitly authorize the complete Workspace tool set. Follow the complete [installation guide](docs/INSTALL.md).
 
 Smoke test:
 
@@ -62,7 +61,6 @@ Smoke test:
 npm test          # Vitest
 npm run typecheck # strict TypeScript
 npm run build     # Apps Script bundle
-npm run build:full # opt-in Workspace manifest
 npm run verify    # GAS entrypoints + all 30 articles
 npm run check     # complete gate
 ```

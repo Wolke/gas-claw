@@ -6,7 +6,7 @@
 
 如果用巨大 switch 處理字串，很快會散落驗證與權限判斷。每個工具應同時宣告 name、description、risk、validate 與 execute。
 
-Tool Registry 同時是 Core／Full 的功能閘門。Core 只宣告 LINE owner notification；只有 Full manifest 已部署且 `WORKSPACE_TOOLS_ENABLED=true` 時，才把 Gmail、Calendar、Drive、Docs、Sheets 與 Tasks 工具交給 Gemini。模型看不到的工具，自然不能靠 prompt 猜名稱啟動。
+完整 Workspace 權限不代表 Gemini 可以任意使用 Google API。Tool Registry 仍只宣告明確列出的 Gmail、Calendar、Drive、Docs、Sheets、Tasks 與 LINE 工具；模型不能靠 prompt 猜出 `shell.exec`、刪除或分享權限。
 
 ## 實作
 
@@ -26,7 +26,7 @@ Registry 只向模型提供名稱、說明和風險，不暴露實作。執行�
 
 ## 動手試試看
 
-先用 Core registry 確認 `gmail.search` 與 `calendar.create` 都是 undefined，再用 Full registry 確認模型只看到必要 metadata。接著模擬三個 decision：`gmail.search` 應立即執行，`calendar.create` 應產生 pending approval，`shell.exec` 應在任何 Google service 被呼叫前失敗。
+先直接呼叫 registry declarations，確認模型只看到必要 metadata。接著模擬三個 decision：`gmail.search` 應立即執行，`calendar.create` 應產生 pending approval，`shell.exec` 應在任何 Google service 被呼叫前失敗。
 
 再測一個看似合法但缺參數的 Calendar call。Validator 應指出 `Missing start`，而不是把 `undefined` 交給 `new Date`。這類負面測試比成功路徑更能證明 registry 是安全邊界。
 

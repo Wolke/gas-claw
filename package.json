@@ -5,7 +5,6 @@
   "type": "module",
   "scripts": {
     "build": "node scripts/build.mjs",
-    "build:full": "node scripts/build.mjs --profile=full",
     "lint": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",

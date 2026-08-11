@@ -4,7 +4,7 @@
 
 第一套端到端技能是 Daily Brief。每天早上，龍蝦主動整理今日 Calendar、未完成任務及重要未讀郵件，再把三項優先行動送回聊天。
 
-這是 Full profile 範例。Core 也能做只包含本機 Tasks 與 reminders 的簡化晨報；文章中的 Calendar、Gmail 與 Google Tasks 證據只有在讀者明確升級 Full 後才可執行。
+這個案例刻意組合 Calendar、Gmail、Google Tasks 與本機 Tasks，展示完整 Google 授權帶來的價值。每個資料源仍透過受控工具讀取，晨報不應把郵件全文或私人行程原樣推送到 LINE。
 
 這個案例同時驗證 scheduler、三個 read tools、記憶與主動 messaging，卻不包含不可逆寫入，適合作為第一個自動技能。
 

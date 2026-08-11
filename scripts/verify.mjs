@@ -1,14 +1,9 @@
 import { readFile, readdir } from 'node:fs/promises';
 const bundle=await readFile('dist/Code.js','utf8');
 const manifest=JSON.parse(await readFile('appsscript.json','utf8'));
-const fullManifest=JSON.parse(await readFile('appsscript.full.json','utf8'));
-for(const scope of ['script.external_request','script.scriptapp','spreadsheets'].map(s=>`https://www.googleapis.com/auth/${s}`))
-  if(!manifest.oauthScopes?.includes(scope))throw new Error(`Missing OAuth scope: ${scope}`);
-for(const forbidden of ['gmail.modify','calendar','drive','documents','tasks'].map(s=>`https://www.googleapis.com/auth/${s}`))
-  if(manifest.oauthScopes?.includes(forbidden))throw new Error(`Core manifest contains optional scope: ${forbidden}`);
 for(const scope of ['script.external_request','script.scriptapp','spreadsheets','gmail.modify','calendar','drive','documents','tasks'].map(s=>`https://www.googleapis.com/auth/${s}`))
-  if(!fullManifest.oauthScopes?.includes(scope))throw new Error(`Full manifest is missing OAuth scope: ${scope}`);
-if(!fullManifest.dependencies?.enabledAdvancedServices?.some(s=>s.serviceId==='tasks'&&s.version==='v1'))throw new Error('Google Tasks advanced service is not enabled in full profile');
+  if(!manifest.oauthScopes?.includes(scope))throw new Error(`Missing OAuth scope: ${scope}`);
+if(!manifest.dependencies?.enabledAdvancedServices?.some(s=>s.serviceId==='tasks'&&s.version==='v1'))throw new Error('Google Tasks advanced service is not enabled');
 if(manifest.webapp?.executeAs!=='USER_DEPLOYING'||manifest.webapp?.access!=='ANYONE_ANONYMOUS')throw new Error('Unexpected web app security configuration');
 for(const name of ['doGet','doPost','schedulerTick','setupGasClaw','configureGasClaw','uninstallGasClaw']){
   if(!bundle.includes(`function ${name}(`))throw new Error(`Missing Apps Script entrypoint: ${name}`);
