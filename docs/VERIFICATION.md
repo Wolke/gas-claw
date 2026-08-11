@@ -32,12 +32,14 @@ Test project: `gas-claw-e2e-20260811`
 - `clasp create`: passed; standalone project created.
 - `clasp push`: passed; manifest and bundle accepted.
 - Advanced Google Tasks service: visible in Apps Script editor.
+- Standard Google Cloud project `gas-claw-e2e-20260811` created; Google Chat API and Google Tasks API both confirmed enabled on 2026-08-11.
+- Attaching that standard project was deliberately stopped at Google's OAuth consent-screen gate. The owner must review the Google API User Data Policy and configure consent; the automation did not accept legal terms on the owner's behalf.
 - Static entrypoint discovery: passed after build shim fix; Apps Script function selector displays `doGet` and the other top-level handlers.
-- Deployment versions 1–9: created successfully; version 9 contains the current audited `0.2.0` bundle, complete Workspace scope set, scheduler leases, execution checkpoints and log minimization.
+- Deployment versions 1–10: created successfully; version 10 contains the current audited `0.2.0` release-candidate bundle, complete Workspace scope set, scheduler leases, execution checkpoints and log minimization.
 
 ## Awaiting account consent
 
-The final live execution, database initialization, public `/exec` health response, Google Chat delivery, LINE delivery, and real Workspace write approval require the project owner to accept the Apps Script OAuth consent prompt and provide personal Gemini/LINE credentials. Automated browser attempts reached the corrected consent prompt but did not accept it because granting persistent access requires explicit user confirmation. Before consent, the version 9 `/exec` endpoint correctly remains inaccessible with HTTP 403. Apps Script Execution API cannot remove this handoff: Google requires a shared standard Cloud project and an OAuth token covering every script scope.
+The final live execution, database initialization, public `/exec` health response, Google Chat delivery, LINE delivery, and real Workspace write approval require the project owner to configure the standard Cloud project's OAuth consent screen, attach project number `656370341977`, accept the Apps Script OAuth prompt, and provide personal Gemini/LINE credentials. Automated browser setup enabled the required APIs and reached the consent-screen gate, but did not accept Google API User Data Policy terms or grant persistent access on the owner's behalf. Before consent, the version 10 `/exec` endpoint correctly remains inaccessible with HTTP 403. Apps Script Execution API cannot remove this handoff: Google requires a shared standard Cloud project and an OAuth token covering every script scope.
 
 These items must not be reported as production-verified until the checklist below has evidence:
 

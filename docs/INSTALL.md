@@ -17,7 +17,18 @@ npx clasp push
 
 If `clasp create` did not produce the intended file, copy `.clasp.json.example` to `.clasp.json`, insert the new script ID, and keep `rootDir` set to `dist`.
 
-## 2. Authorize and initialize
+## 2. Attach a standard Google Cloud project
+
+Google Chat configuration and the Google Tasks advanced service need a **standard** Google Cloud project. Do this before the first Apps Script authorization:
+
+1. Create a Google Cloud project and note its numeric **project number** (not the project ID).
+2. In that project, enable **Google Chat API** and **Google Tasks API**.
+3. Configure the OAuth consent screen. For a personal Google account choose the external audience, add yourself as a test user when Google requests it, and review every requested scope. Workspace administrators may restrict the audience or scopes.
+4. In Apps Script open **Project Settings → Google Cloud Platform (GCP) Project → Change project**, enter the project number, and confirm.
+
+Apps Script refuses to attach a standard project until its OAuth consent screen is configured. Changing the attached project also revokes authorizations issued through the former project, so attach it before running setup. You do not need to create an OAuth client ID for the Apps Script web app itself.
+
+## 3. Authorize and initialize
 
 Open the Apps Script project. Choose `setupGasClaw` from the function selector, run it, review the requested Google scopes, and allow access for your own script. A spreadsheet named `gas-claw database` and one minute trigger will be created.
 
@@ -25,7 +36,7 @@ The explicit manifest scopes cover external requests, triggers, Sheets, Gmail, C
 
 Run setup a second time to verify it is idempotent: the database URL should remain the same and there should still be one scheduler trigger.
 
-## 3. Configure Script Properties
+## 4. Configure Script Properties
 
 Open **Project Settings → Script Properties**. Add only the channels you use:
 
@@ -41,7 +52,7 @@ Open **Project Settings → Script Properties**. Add only the channels you use:
 
 Never put these values in source, Sheets, screenshots, articles, or GitHub Actions.
 
-## 4. Deploy the web app
+## 5. Deploy the web app
 
 Use **Deploy → New deployment → Web app**. Execute as yourself. LINE needs an endpoint it can reach; choose the audience supported by your account and keep the URL secret. Copy the `/exec` URL.
 
@@ -53,11 +64,18 @@ https://script.google.com/macros/s/DEPLOYMENT_ID/exec?token=LINE_WEBHOOK_TOKEN
 
 Apps Script does not expose LINE's signature header. This direct pure-GAS mode therefore uses the URL token plus owner allowlist. Put a signature-verifying proxy in front of GAS for production or team use.
 
-## 5. Google Chat
+## 6. Google Chat
 
-Configure a Google Chat app in the standard Google Cloud project attached to the script, select Apps Script as the endpoint, and use the deployment ID. The handler is `onMessage`. Add the app to a direct message and set `GOOGLE_CHAT_OWNER_ID` to the sender resource name shown in a test event.
+In the standard Google Cloud project, open **Google Chat API → Configuration** and configure the Chat app:
 
-## 6. Smoke test
+- Enable interactive features.
+- Select **Apps Script** as the connection setting and enter the Apps Script deployment ID.
+- Allow direct messages; the first release deliberately rejects spaces and group messages.
+- Limit visibility to your own account while testing.
+
+Save the configuration, add the app to a direct message, and set `GOOGLE_CHAT_OWNER_ID` to the sender resource name (`users/...`) shown in a test event. The Apps Script handler is `onMessage`.
+
+## 7. Smoke test
 
 ```text
 幫助
